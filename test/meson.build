@@ -1,4 +1,5 @@
 tests_src = files(
+    'block-tests.cpp',
     'catch-main.cpp',
 )
 

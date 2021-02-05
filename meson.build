@@ -13,6 +13,8 @@ catch2_proj = subproject('catch2')
 catch2_dep = catch2_proj.get_variable('catch2_dep')
 
 gs2_src = files(
+    'src/block.cpp',
+    'src/command.cpp',
 )
 
 gs2_inc = include_directories('inc')
