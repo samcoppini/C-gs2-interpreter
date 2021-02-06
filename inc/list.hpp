@@ -23,6 +23,8 @@ class List {
 
         std::vector<Value>::iterator begin();
         std::vector<Value>::iterator end();
+        std::vector<Value>::const_iterator begin() const;
+        std::vector<Value>::const_iterator end() const;
 
         Value& operator[](size_t index);
         const Value& operator[](size_t index) const;

@@ -11,7 +11,7 @@ gs2::List getResult(const std::string &code) {
     auto block = gs2::Block::parseBytes(codeBytes);
 
     gs2::List list;
-    gs2::GS2Context gs2{std::cin, std::cout, list};
+    gs2::GS2Context gs2{std::cout, list};
     block.execute(gs2);
     return list;
 }

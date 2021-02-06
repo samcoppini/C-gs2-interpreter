@@ -3,6 +3,7 @@
 #include "List.hpp"
 
 #include <cstdint>
+#include <string>
 #include <variant>
 
 namespace gs2 {
@@ -21,6 +22,8 @@ class Value {
         bool isList() const;
         const List& getList() const; 
         List& getList();
+
+        std::string str(bool nested=false) const;
 };
 
 } // namespace gs2

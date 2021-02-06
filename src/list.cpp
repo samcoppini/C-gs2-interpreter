@@ -19,6 +19,14 @@ std::vector<Value>::iterator List::end() {
     return _values.end();
 }
 
+std::vector<Value>::const_iterator List::begin() const {
+    return _values.begin();
+}
+
+std::vector<Value>::const_iterator List::end() const {
+    return _values.end();
+}
+
 Value& List::operator[](size_t index) {
     return _values[index];
 }

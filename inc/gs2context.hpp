@@ -8,14 +8,12 @@ namespace gs2 {
 
 class GS2Context {
     private:
-        std::istream &_input;
-
         std::ostream &_output;
 
         List &_stack;
 
     public:
-        GS2Context(std::istream &input, std::ostream &output, List &list);
+        GS2Context(std::ostream &output, List &stack);
 
         void push(Value value);
 };
