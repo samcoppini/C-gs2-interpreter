@@ -34,6 +34,10 @@ Command::Command(std::vector<uint8_t> bytes):
 
 void Command::execute(GS2Context &gs2) const {
     switch (_bytes[0]) {
+        case 0x00:
+            // nop
+            break;
+
         case 0x01:
             gs2.push(_bytes[1]);
             break;

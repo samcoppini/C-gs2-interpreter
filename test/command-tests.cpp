@@ -30,6 +30,13 @@ void compareString(const gs2::List &list, const std::string &expected) {
     }
 }
 
+TEST_CASE("Test 0x00 - nop") {
+    gs2::List result;
+
+    CHECK_NOTHROW(result = getResult({"\x00", 1}));
+    CHECK(result.size() == 0);
+}
+
 TEST_CASE("Test 0x01 - push an unsigned byte") {
     auto result = getResult({"\x01\x42\x01\xFF\x01\x00", 6});
 
