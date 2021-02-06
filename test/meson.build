@@ -1,6 +1,7 @@
 tests_src = files(
     'block-tests.cpp',
     'catch-main.cpp',
+    'command-tests.cpp',
 )
 
 gs2_test = executable(

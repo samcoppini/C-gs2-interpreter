@@ -87,6 +87,12 @@ Block Block::parseBytes(const std::vector<uint8_t> &code) {
     return block;
 }
 
+void Block::execute(GS2Context &gs2) const {
+    for (const auto &command: _commands) {
+        command.execute(gs2);
+    }
+}
+
 void Block::add(Command command) {
     _commands.emplace_back(std::move(command));
 }
