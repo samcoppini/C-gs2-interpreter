@@ -83,6 +83,23 @@ void Command::execute(GS2Context &gs2) const {
             break;
         }
 
+        case 0x10: gs2.push(0);    break;
+        case 0x11: gs2.push(1);    break;
+        case 0x12: gs2.push(2);    break;
+        case 0x13: gs2.push(3);    break;
+        case 0x14: gs2.push(4);    break;
+        case 0x15: gs2.push(5);    break;
+        case 0x16: gs2.push(6);    break;
+        case 0x17: gs2.push(7);    break;
+        case 0x18: gs2.push(8);    break;
+        case 0x19: gs2.push(9);    break;
+        case 0x1a: gs2.push(10);   break;
+        case 0x1b: gs2.push(100);  break;
+        case 0x1c: gs2.push(1000); break;
+        case 0x1d: gs2.push(16);   break;
+        case 0x1e: gs2.push(64);   break;
+        case 0x1f: gs2.push(256);  break;
+
         default:
             throw GS2Exception{"Unhandled command byte: " + std::to_string(_bytes[0])};
     }

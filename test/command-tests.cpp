@@ -135,3 +135,49 @@ TEST_CASE("Test 0x07 - push a single character string") {
     REQUIRE(result[1].isList());
     compareString(result[1].getList(), "\x20");
 }
+
+TEST_CASE("Test 0x10 through 0x1a - pushing small numbers") {
+    for (auto i = 0; i <= 10; i++) {
+        char buf[2] = { static_cast<char>(0x10 + i), '\0' };
+        auto result = getResult(buf);
+
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isNumber());
+        CHECK(result[0].getNumber() == i);
+    }
+}
+
+TEST_CASE("Test 0x1b - push 100") {
+    auto result = getResult("\x1b");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 100);
+}
+
+TEST_CASE("Test 0x1c - push 1000") {
+    auto result = getResult("\x1c");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 1000);
+}
+
+TEST_CASE("Test 0x1d - push 16") {
+    auto result = getResult("\x1d");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 16);
+}
+
+TEST_CASE("Test 0x1e - push 64") {
+    auto result = getResult("\x1e");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 64);
+}
+
+TEST_CASE("Test 0x1f - push 256") {
+    auto result = getResult("\x1f");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 256);
+}
