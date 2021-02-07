@@ -2,8 +2,7 @@
 
 namespace gs2 {
 
-GS2Context::GS2Context(std::ostream &output, List &stack):
-    _output(output),
+GS2Context::GS2Context(List &stack):
     _stack(stack)
 {}
 

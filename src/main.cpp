@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
         auto block = gs2::Block::parseBytes(code);
         auto stack = initialStack();
 
-        gs2::GS2Context gs2{std::cout, stack};
+        gs2::GS2Context gs2{stack};
         block.execute(gs2);
 
         for (const auto &val: stack) {

@@ -17,7 +17,7 @@ gs2::List getResult(const std::string &code, const std::vector<gs2::Value> &init
         list.add(val);
     }
 
-    gs2::GS2Context gs2{std::cout, list};
+    gs2::GS2Context gs2{list};
     block.execute(gs2);
     return list;
 }
