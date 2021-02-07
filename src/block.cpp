@@ -1,4 +1,5 @@
 #include "block.hpp"
+#include "command.hpp"
 #include "gs2exception.hpp"
 
 #include <optional>
@@ -33,27 +34,64 @@ size_t stringLength(const std::vector<uint8_t> &code, size_t start) {
 
 } // anonymous namespace
 
+Block::Block() {}
+
+Block::Block(const Block &block): _commands(block._commands) {}
+
+Block::Block(Block &&block): _commands(std::move(block._commands)) {}
+
+Block& Block::operator=(const Block &block) {
+    _commands = block._commands;
+    return *this;
+}
+
+Block& Block::operator=(Block &&block) {
+    _commands = std::move(block._commands);
+    return *this;
+}
+
+Block::~Block() {}
+
 Block Block::parseBytes(const std::vector<uint8_t> &code) {
-    Block block;
+    std::vector<Block> blocks;
+    std::vector<Command> final;
+
+    blocks.emplace_back();
 
     size_t startIndex = 0;
 
     if (auto stringEnd = findUnstartedString(code); stringEnd) {
         std::vector<uint8_t> string = { STRING_START_CMD };
         string.insert(string.end(), code.begin(), code.begin() + *stringEnd + 1);
-        block.add(Command{std::move(string)});
+        blocks.back().add(Command{std::move(string)});
         startIndex = *stringEnd + 1;
     }
 
+    auto openBlock = [&] (uint8_t cmdByte) {
+        blocks.emplace_back();
+        final.emplace_back(std::vector<uint8_t>{cmdByte});
+    };
+
+    auto closeBlock = [&] {
+        if (blocks.size() < 2) {
+            throw GS2Exception{"Cannot close an unopened block!"};
+        }
+        blocks[blocks.size() - 2].add(std::move(blocks.back()));
+        blocks.pop_back();
+        blocks.back().add(std::move(final.back()));
+        final.pop_back();
+    };
+
     for (size_t i = startIndex; i < code.size(); ++i)
     {
-        auto addCommand = [&] (const std::string &name, size_t cmdLen) {
+        auto addCommand = [&] (const char *name, size_t cmdLen) {
             if (i + cmdLen > code.size()) {
-                throw GS2Exception{"File ended before end of " + name + " command"};
+                throw GS2Exception{"File ended before end of " +
+                                   std::string{name} + " command"};
             }
 
             std::vector<uint8_t> cmd{code.begin() + i, code.begin() + cmdLen + i};
-            block.add(Command{std::move(cmd)});
+            blocks.back().add(Command{std::move(cmd)});
             i += cmdLen - 1;
         };
 
@@ -78,12 +116,33 @@ Block Block::parseBytes(const std::vector<uint8_t> &code) {
                 addCommand("array push", stringLength(code, i));
                 break;
 
+            case BLOCK_START_CMD:
+                openBlock(0x00);
+                break;
+
+            case MAP_BLOCK_CMD:
+                openBlock(0x34);
+                break;
+
+            case FILTER_BLOCK_CMD:
+                openBlock(0x35);
+                break;
+
+            case BLOCK_END_CMD:
+                closeBlock();
+                break;
+
             default:
                 addCommand("", 1);
                 break;
         }
     }
 
+    while (!final.empty()) {
+        closeBlock();
+    }
+
+    auto block = std::move(blocks[0]);
     return block;
 }
 

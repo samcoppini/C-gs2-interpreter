@@ -16,6 +16,8 @@ class GS2Context {
         GS2Context(std::ostream &output, List &stack);
 
         void push(Value value);
+
+        Value pop();
 };
 
 } // namespace gs2

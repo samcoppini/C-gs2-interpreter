@@ -188,3 +188,23 @@ TEST_CASE("Test 0x1f - push 256") {
     REQUIRE(result[0].isNumber());
     CHECK(result[0].getNumber() == 256);
 }
+
+TEST_CASE("Test 0x20 - negate / reverse / eval") {
+    // Push 10 to the stack, then negate it
+    auto result = getResult("\x1a\x20");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == -10);
+
+    // Push the string Hello to the stack, then reverse it
+    result = getResult("\x04Hello\x05\x20");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), "olleH");
+
+    // Push a block that pushes 10 to the stack, then execute it
+    result = getResult("\x08\x1a\x09\x20");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 10);
+}

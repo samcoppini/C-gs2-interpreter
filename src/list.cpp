@@ -1,5 +1,8 @@
 #include "list.hpp"
+#include "gs2exception.hpp"
 #include "value.hpp"
+
+#include <algorithm>
 
 namespace gs2 {
 
@@ -9,6 +12,20 @@ List::~List() {}
 
 void List::add(Value value) {
     _values.emplace_back(std::move(value));
+}
+
+Value List::pop() {
+    if (_values.empty()) {
+        throw GS2Exception{"Cannot pop an empty list!"};
+    }
+
+    auto value = std::move(_values.back());
+    _values.pop_back();
+    return value;
+}
+
+void List::reverse() {
+    std::reverse(_values.begin(), _values.end());
 }
 
 std::vector<Value>::iterator List::begin() {
@@ -37,6 +54,10 @@ const Value& List::operator[](size_t index) const {
 
 size_t List::size() const {
     return _values.size();
+}
+
+bool List::empty() const {
+    return _values.empty();
 }
 
 } // namespace gs2

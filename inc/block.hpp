@@ -1,9 +1,11 @@
 #pragma once
 
-#include "command.hpp"
+#include <cstdint>
+#include <vector>
 
 namespace gs2 {
 
+class Command;
 class GS2Context;
 
 class Block {
@@ -11,6 +13,13 @@ class Block {
         std::vector<Command> _commands;
 
     public:
+        Block();
+        Block(const Block &);
+        Block(Block &&);
+        Block& operator=(const Block &);
+        Block& operator=(Block &&);
+        ~Block();
+
         static Block parseBytes(const std::vector<uint8_t> &code);
 
         void add(Command command);

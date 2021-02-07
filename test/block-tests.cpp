@@ -1,12 +1,16 @@
 #include "catch2/catch.hpp"
 
 #include "block.hpp"
+#include "command.hpp"
 #include "gs2exception.hpp"
 
-void testParse(const std::string &code, const std::vector<std::string> &expected) {
+gs2::Block parseBlock(const std::string &code) {
     std::vector<uint8_t> codeBytes{code.begin(), code.end()};
+    return gs2::Block::parseBytes(codeBytes);
+}
 
-    auto block = gs2::Block::parseBytes(codeBytes);
+void testParse(const std::string &code, const std::vector<std::string> &expected) {
+    auto block = parseBlock(code);
     auto &cmds = block.getCommands();
 
     REQUIRE(expected.size() == cmds.size());
@@ -54,10 +58,73 @@ TEST_CASE("Testing code parsing") {
     testParse("\x01\x02\x03\x9f", {"\x04\x01\x02\x03\x9f"});
 
     // Now, some things which should fail to parse
-
     testFail("\x01");
     testFail("\x02?");
     testFail("\x03???");
     testFail("\x04 blah blah blah");
     testFail("\x07");
+    testFail("\x09");
+}
+
+TEST_CASE("Testing block parses") {
+    // Simple block case
+    auto commands = parseBlock("\x08hey\x09").getCommands();
+
+    REQUIRE(commands.size() == 2);
+    REQUIRE(commands[1].isBytes());
+    REQUIRE(commands[1].getBytes() == std::vector<uint8_t>{ 0 });
+    REQUIRE(commands[0].isBlock());
+    commands = commands[0].getBlock().getCommands();
+    REQUIRE(commands.size() == 3);
+    REQUIRE(commands[0].isBytes());
+    CHECK(commands[0].getBytes() == std::vector<uint8_t>{ 'h' });
+    REQUIRE(commands[1].isBytes());
+    CHECK(commands[1].getBytes() == std::vector<uint8_t>{ 'e' });
+    REQUIRE(commands[2].isBytes());
+    CHECK(commands[2].getBytes() == std::vector<uint8_t>{ 'y' });
+
+    // Nested blocks
+    commands = parseBlock("\x08\x08\x08\x08").getCommands();
+    for (int i = 0; i < 4; i++) {
+        REQUIRE(commands.size() == 2);
+        REQUIRE(commands[1].isBytes());
+        CHECK(commands[1].getBytes() == std::vector<uint8_t>{ 0 });
+
+        REQUIRE(commands[0].isBlock());
+        if (i == 3) {
+            REQUIRE(commands[0].getBlock().getCommands().empty());
+        }
+        else {
+            auto innerBlock = commands[0].getBlock().getCommands();
+            commands = innerBlock;
+        }
+    }
+
+    // Filter block
+    commands = parseBlock("\xff?!").getCommands();
+
+    REQUIRE(commands.size() == 2);
+    REQUIRE(commands[1].isBytes());
+    CHECK(commands[1].getBytes() == std::vector<uint8_t>{ 0x35 });
+    REQUIRE(commands[0].isBlock());
+    auto innerBlock = commands[0].getBlock().getCommands();
+    REQUIRE(innerBlock.size() == 2);
+    REQUIRE(innerBlock[0].isBytes());
+    CHECK(innerBlock[0].getBytes() == std::vector<uint8_t>{ '?' });
+    REQUIRE(innerBlock[1].isBytes());
+    CHECK(innerBlock[1].getBytes() == std::vector<uint8_t>{ '!' });
+
+    // Map block
+    commands = parseBlock("\xfe?!").getCommands();
+
+    REQUIRE(commands.size() == 2);
+    REQUIRE(commands[1].isBytes());
+    CHECK(commands[1].getBytes() == std::vector<uint8_t>{ 0x34 });
+    REQUIRE(commands[0].isBlock());
+    innerBlock = commands[0].getBlock().getCommands();
+    REQUIRE(innerBlock.size() == 2);
+    REQUIRE(innerBlock[0].isBytes());
+    CHECK(innerBlock[0].getBytes() == std::vector<uint8_t>{ '?' });
+    REQUIRE(innerBlock[1].isBytes());
+    CHECK(innerBlock[1].getBytes() == std::vector<uint8_t>{ '!' });
 }

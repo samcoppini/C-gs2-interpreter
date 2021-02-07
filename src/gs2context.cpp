@@ -11,4 +11,8 @@ void GS2Context::push(Value value) {
     _stack.add(std::move(value));
 }
 
+Value GS2Context::pop() {
+    return _stack.pop();
+}
+
 } // namespace gs2

@@ -1,4 +1,5 @@
 #include "command.hpp"
+#include "commands.hpp"
 #include "gs2context.hpp"
 #include "gs2exception.hpp"
 
@@ -29,39 +30,56 @@ List splitString(std::vector<uint8_t>::const_iterator begin,
 } // anonymous namespace
 
 Command::Command(std::vector<uint8_t> bytes):
-    _bytes(std::move(bytes))
+    _command(std::move(bytes))
+{}
+
+Command::Command(Block block):
+    _command(std::move(block))
 {}
 
 void Command::execute(GS2Context &gs2) const {
-    switch (_bytes[0]) {
+    std::visit([&gs2] (const auto &arg) {
+        using T = std::decay_t<decltype(arg)>;
+
+        if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
+            executeBytes(arg, gs2);
+        }
+        else if constexpr (std::is_same_v<T, Block>) {
+            gs2.push(arg);
+        }
+    }, _command);
+}
+
+void Command::executeBytes(const std::vector<uint8_t> &bytes, GS2Context &gs2) {
+    switch (bytes[0]) {
         case 0x00:
             // nop
             break;
 
         case 0x01:
-            gs2.push(_bytes[1]);
+            gs2.push(bytes[1]);
             break;
 
         case 0x02: {
-            int16_t num = (_bytes[1] | (_bytes[2] << 8));
+            int16_t num = (bytes[1] | (bytes[2] << 8));
             gs2.push(num);
             break;
         }
 
         case 0x03: {
             int32_t num = 0;
-            num |= _bytes[1] << 0;
-            num |= _bytes[2] << 8;
-            num |= _bytes[3] << 16;
-            num |= _bytes[4] << 24;
+            num |= bytes[1] << 0;
+            num |= bytes[2] << 8;
+            num |= bytes[3] << 16;
+            num |= bytes[4] << 24;
             gs2.push(num);
             break;
         }
 
         case 0x04: {
-            auto strings = splitString(_bytes.begin() + 1, _bytes.end() - 1);
+            auto strings = splitString(bytes.begin() + 1, bytes.end() - 1);
 
-            switch (_bytes.back()) {
+            switch (bytes.back()) {
                 case 0x05:
                     for (auto &string: strings) {
                         gs2.push(std::move(string));
@@ -74,7 +92,7 @@ void Command::execute(GS2Context &gs2) const {
 
                 default:
                     throw GS2Exception{"Unhandled string end byte: " +
-                                       std::to_string(_bytes.back())};
+                                       std::to_string(bytes.back())};
             }
 
             break;
@@ -82,7 +100,7 @@ void Command::execute(GS2Context &gs2) const {
 
         case 0x07: {
             List list;
-            list.add(_bytes[1]);
+            list.add(bytes[1]);
             gs2.push(std::move(list));
             break;
         }
@@ -103,14 +121,27 @@ void Command::execute(GS2Context &gs2) const {
         case 0x1d: gs2.push(16);   break;
         case 0x1e: gs2.push(64);   break;
         case 0x1f: gs2.push(256);  break;
+        case 0x20: negate(gs2);    break;
 
         default:
-            throw GS2Exception{"Unhandled command byte: " + std::to_string(_bytes[0])};
+            throw GS2Exception{"Unhandled command byte: " + std::to_string(bytes[0])};
     }
 }
 
+bool Command::isBytes() const {
+    return std::holds_alternative<std::vector<uint8_t>>(_command);
+}
+
 const std::vector<uint8_t> &Command::getBytes() const {
-    return _bytes;
+    return std::get<std::vector<uint8_t>>(_command);
+}
+
+bool Command::isBlock() const {
+    return std::holds_alternative<Block>(_command);
+}
+
+const Block& Command::getBlock() const {
+    return std::get<Block>(_command);
 }
 
 bool isStringEnd(const uint8_t byte) {

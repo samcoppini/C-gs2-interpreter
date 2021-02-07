@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
         // it prints out a quine to stdout. This behavior of gs2 allows it
         // to be good at simple "print this string" problems, since most
         // random strings are unlikely to be valid gs2 programs.
-        std::cerr << ex.what();
+        std::cerr << ex.what() << '\n';
         std::cout.write(reinterpret_cast<char *>(code.data()), code.size());
     }
 }

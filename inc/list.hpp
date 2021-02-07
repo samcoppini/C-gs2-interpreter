@@ -20,6 +20,8 @@ class List {
         List& operator=(List &&) = default;
 
         void add(Value val);
+        Value pop();
+        void reverse();
 
         std::vector<Value>::iterator begin();
         std::vector<Value>::iterator end();
@@ -30,6 +32,7 @@ class List {
         const Value& operator[](size_t index) const;
 
         size_t size() const;
+        bool empty() const;
 };
 
 } // namespace gs2
