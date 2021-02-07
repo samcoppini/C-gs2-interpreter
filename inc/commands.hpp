@@ -1,13 +1,8 @@
 #pragma once
 
-#include <string>
-
 namespace gs2 {
 
 class GS2Context;
-class Value;
-
-std::string makeString(Value value);
 
 void catenate(GS2Context &);
 

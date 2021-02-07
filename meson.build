@@ -18,6 +18,7 @@ gs2_src = files(
     'src/commands.cpp',
     'src/gs2context.cpp',
     'src/list.cpp',
+    'src/utils.cpp',
     'src/value.cpp',
 )
 
