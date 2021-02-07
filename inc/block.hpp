@@ -23,6 +23,7 @@ class Block {
         static Block parseBytes(const std::vector<uint8_t> &code);
 
         void add(Command command);
+        void concat(const Block &block);
 
         void execute(GS2Context &gs2) const;
 

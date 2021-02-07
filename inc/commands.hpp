@@ -9,6 +9,8 @@ class Value;
 
 std::string makeString(Value value);
 
+void catenate(GS2Context &);
+
 void negate(GS2Context &);
 
 void readNum(GS2Context &);

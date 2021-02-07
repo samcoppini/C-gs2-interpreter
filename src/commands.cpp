@@ -28,6 +28,36 @@ std::string makeString(Value value) {
     }
 }
 
+// 0x30 command
+// add / catenate
+void catenate(GS2Context &gs2) {
+    auto y = gs2.pop();
+    auto x = gs2.pop();
+
+    if (x.isNumber() && y.isNumber()) {
+        gs2.push(x.getNumber() + y.getNumber());
+    }
+    else if (x.isList() && y.isList()) {
+        x.getList().concat(y.getList());
+        gs2.push(std::move(x));
+    }
+    else if (x.isBlock() && y.isBlock()) {
+        x.getBlock().concat(y.getBlock());
+        gs2.push(std::move(x));
+    }
+    else if (x.isList()) {
+        x.getList().add(std::move(y));
+        gs2.push(std::move(x));
+    }
+    else if (y.isList()) {
+        y.getList().insert(y.getList().begin(), std::move(x));
+        gs2.push(std::move(y));
+    }
+    else {
+        throw GS2Exception{"Unsupported types for add / catenate!"};
+    }
+}
+
 // 0x20 command
 // negate a number
 // reverse a list
@@ -48,6 +78,8 @@ void negate(GS2Context &gs2) {
     }
 }
 
+// 0x56 command
+// read-num
 void readNum(GS2Context &gs2) {
     auto str = makeString(gs2.pop());
     auto numberRegex = std::regex{"-?[0-9]+"};

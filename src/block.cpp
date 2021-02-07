@@ -156,6 +156,10 @@ void Block::add(Command command) {
     _commands.emplace_back(std::move(command));
 }
 
+void Block::concat(const Block &block) {
+    _commands.insert(_commands.end(), block._commands.begin(), block._commands.end());
+}
+
 const std::vector<Command> &Block::getCommands() const {
     return _commands;
 }

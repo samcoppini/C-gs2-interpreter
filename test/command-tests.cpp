@@ -1,17 +1,22 @@
 #include "catch2/catch.hpp"
 
 #include "block.hpp"
+#include "command.hpp"
 #include "gs2context.hpp"
 #include "gs2exception.hpp"
 #include "list.hpp"
 
 #include <iostream>
 
-gs2::List getResult(const std::string &code) {
+gs2::List getResult(const std::string &code, const std::vector<gs2::Value> &initialStack = {}) {
     std::vector<uint8_t> codeBytes{code.begin(), code.end()};
     auto block = gs2::Block::parseBytes(codeBytes);
 
     gs2::List list;
+    for (const auto &val: initialStack) {
+        list.add(val);
+    }
+
     gs2::GS2Context gs2{std::cout, list};
     block.execute(gs2);
     return list;
@@ -208,6 +213,79 @@ TEST_CASE("Test 0x20 - negate / reverse / eval") {
     REQUIRE(result.size() == 1);
     REQUIRE(result[0].isNumber());
     CHECK(result[0].getNumber() == 10);
+}
+
+TEST_CASE("Test 0x30 - add / catenate") {
+    SECTION("Error cases") {
+        // Can't add empty stack
+        CHECK_THROWS_AS(getResult("\x30"), gs2::GS2Exception);
+
+        // Can't add stack with only one value
+        CHECK_THROWS_AS(getResult("\x30", {10}), gs2::GS2Exception);
+
+        // Can't add block and int
+        CHECK_THROWS_AS(getResult("\x30", {gs2::Block{}, 10}), gs2::GS2Exception);
+    }
+
+    SECTION("Successful cases") {
+        // Adding two numbers
+        auto result = getResult("\x30", {12, 30});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isNumber());
+        CHECK(result[0].getNumber() == 42);
+
+        // Adding two lists
+        gs2::List list1, list2;
+        list1.add(10);
+        list2.add(20);
+        result = getResult("\x30", {list1, list2});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        auto resultList = result[0].getList();
+        REQUIRE(resultList.size() == 2);
+        REQUIRE(resultList[0].isNumber());
+        CHECK(resultList[0].getNumber() == 10);
+        REQUIRE(resultList[1].isNumber());
+        CHECK(resultList[1].getNumber() == 20);
+
+        // Combining two blocks
+        gs2::Block block1, block2;
+        block1.add(std::vector<uint8_t>{10});
+        block2.add(std::vector<uint8_t>{1, 11});
+        result = getResult("\x30", {block1, block2});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isBlock());
+        auto resultBlock = result[0].getBlock();
+        auto resultCommands = resultBlock.getCommands();
+        REQUIRE(resultCommands.size() == 2);
+        REQUIRE(resultCommands[0].isBytes());
+        CHECK(resultCommands[0].getBytes() == std::vector<uint8_t>{10});
+        REQUIRE(resultCommands[1].isBytes());
+        CHECK(resultCommands[1].getBytes() == std::vector<uint8_t>{1, 11});
+
+        // Adding a number to the end of a list
+        result = getResult("\x30", {list1, 11});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        resultList = result[0].getList();
+        REQUIRE(resultList.size() == 2);
+        REQUIRE(resultList[0].isNumber());
+        CHECK(resultList[0].getNumber() == 10);
+        REQUIRE(resultList[1].isNumber());
+        CHECK(resultList[1].getNumber() == 11);
+
+        // Adding a number to the beginning of a list
+        result = getResult("\x30", {9, list1});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        resultList = result[0].getList();
+        REQUIRE(resultList.size() == 2);
+        REQUIRE(resultList[0].isNumber());
+        CHECK(resultList[0].getNumber() == 9);
+        REQUIRE(resultList[1].isNumber());
+        CHECK(resultList[1].getNumber() == 10);
+
+    }
 }
 
 TEST_CASE("Test 0x56 - read-num") {

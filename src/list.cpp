@@ -14,6 +14,14 @@ void List::add(Value value) {
     _values.emplace_back(std::move(value));
 }
 
+void List::concat(const List &list) {
+    _values.insert(_values.end(), list._values.begin(), list._values.end());
+}
+
+void List::insert(std::vector<Value>::iterator it, Value value) {
+    _values.insert(it, std::move(value));
+}
+
 Value List::pop() {
     if (_values.empty()) {
         throw GS2Exception{"Cannot pop an empty list!"};

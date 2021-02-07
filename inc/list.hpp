@@ -20,6 +20,8 @@ class List {
         List& operator=(List &&) = default;
 
         void add(Value val);
+        void concat(const List &);
+        void insert(std::vector<Value>::iterator it, Value value);
         Value pop();
         void reverse();
 
