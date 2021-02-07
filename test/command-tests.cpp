@@ -2,6 +2,7 @@
 
 #include "block.hpp"
 #include "gs2context.hpp"
+#include "gs2exception.hpp"
 #include "list.hpp"
 
 #include <iostream>
@@ -207,4 +208,74 @@ TEST_CASE("Test 0x20 - negate / reverse / eval") {
     REQUIRE(result.size() == 1);
     REQUIRE(result[0].isNumber());
     CHECK(result[0].getNumber() == 10);
+}
+
+TEST_CASE("Test 0x56 - read-num") {
+    SECTION("Error cases") {
+        // Can't read number off of an empty stack
+        CHECK_THROWS_AS(getResult("\x56"), gs2::GS2Exception);
+
+        // Can't read number from a block
+        CHECK_THROWS_AS(getResult("\x08 10 \x09\x56"), gs2::GS2Exception);
+
+        // Can't read non-number string
+        CHECK_THROWS_AS(getResult("\x04hey\x05\x56"), gs2::GS2Exception);
+    }
+
+    SECTION("Successful cases") {
+        auto result = getResult("([{-99}])\x05\x56");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isNumber());
+        CHECK(result[0].getNumber() == -99);
+
+        result = getResult("\x01\x30\x56");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isNumber());
+        CHECK(result[0].getNumber() == 0);
+
+        result = getResult("11,-12,13,-14\x05\x56");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isNumber());
+        CHECK(result[0].getNumber() == 11);
+    }
+}
+
+TEST_CASE("Test 0x57 - read-nums") {
+    SECTION("Error cases") {
+        // Can't read number off of an empty stack
+        CHECK_THROWS_AS(getResult("\x57"), gs2::GS2Exception);
+
+        // Can't read number from a block
+        CHECK_THROWS_AS(getResult("\x08 10 \x09\x57"), gs2::GS2Exception);
+    }
+
+    SECTION("Successful cases") {
+        auto result = getResult("this is not a number\x05\x57");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        auto numList = result[0].getList();
+        CHECK(numList.size() == 0);
+
+        result = getResult("\x01\x30\x57");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        numList = result[0].getList();
+        REQUIRE(numList.size() == 1);
+        REQUIRE(numList[0].isNumber());
+        CHECK(numList[0].getNumber() == 0);
+
+        result = getResult("11,-12,13,-14\x05\x57");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        numList = result[0].getList();
+        REQUIRE(numList.size() == 4);
+        REQUIRE(numList[0].isNumber());
+        CHECK(numList[0].getNumber() == 11);
+        REQUIRE(numList[1].isNumber());
+        CHECK(numList[1].getNumber() == -12);
+        REQUIRE(numList[2].isNumber());
+        CHECK(numList[2].getNumber() == 13);
+        REQUIRE(numList[3].isNumber());
+        CHECK(numList[3].getNumber() == -14);
+    }
 }
