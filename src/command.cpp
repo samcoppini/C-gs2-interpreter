@@ -105,26 +105,30 @@ void Command::executeBytes(const std::vector<uint8_t> &bytes, GS2Context &gs2) {
             break;
         }
 
-        case 0x10: gs2.push(0);    break;
-        case 0x11: gs2.push(1);    break;
-        case 0x12: gs2.push(2);    break;
-        case 0x13: gs2.push(3);    break;
-        case 0x14: gs2.push(4);    break;
-        case 0x15: gs2.push(5);    break;
-        case 0x16: gs2.push(6);    break;
-        case 0x17: gs2.push(7);    break;
-        case 0x18: gs2.push(8);    break;
-        case 0x19: gs2.push(9);    break;
-        case 0x1a: gs2.push(10);   break;
-        case 0x1b: gs2.push(100);  break;
-        case 0x1c: gs2.push(1000); break;
-        case 0x1d: gs2.push(16);   break;
-        case 0x1e: gs2.push(64);   break;
-        case 0x1f: gs2.push(256);  break;
-        case 0x20: negate(gs2);    break;
-        case 0x30: catenate(gs2);  break;
-        case 0x56: readNum(gs2);   break;
-        case 0x57: readNums(gs2);  break;
+        case 0x0a: newLine(gs2);    break;
+        case 0x0b: emptyList(gs2);  break;
+        case 0x0c: emptyBlock(gs2); break;
+        case 0x0d: space(gs2);      break;
+        case 0x10: gs2.push(0);     break;
+        case 0x11: gs2.push(1);     break;
+        case 0x12: gs2.push(2);     break;
+        case 0x13: gs2.push(3);     break;
+        case 0x14: gs2.push(4);     break;
+        case 0x15: gs2.push(5);     break;
+        case 0x16: gs2.push(6);     break;
+        case 0x17: gs2.push(7);     break;
+        case 0x18: gs2.push(8);     break;
+        case 0x19: gs2.push(9);     break;
+        case 0x1a: gs2.push(10);    break;
+        case 0x1b: gs2.push(100);   break;
+        case 0x1c: gs2.push(1000);  break;
+        case 0x1d: gs2.push(16);    break;
+        case 0x1e: gs2.push(64);    break;
+        case 0x1f: gs2.push(256);   break;
+        case 0x20: negate(gs2);     break;
+        case 0x30: catenate(gs2);   break;
+        case 0x56: readNum(gs2);    break;
+        case 0x57: readNums(gs2);   break;
 
         default:
             throw GS2Exception{"Unhandled command byte: " + std::to_string(bytes[0])};

@@ -8,8 +8,7 @@
 
 namespace gs2 {
 
-// 0x30 command
-// add / catenate
+// 0x30 - add / catenate
 void catenate(GS2Context &gs2) {
     auto y = gs2.pop();
     auto x = gs2.pop();
@@ -38,10 +37,17 @@ void catenate(GS2Context &gs2) {
     }
 }
 
-// 0x20 command
-// negate a number
-// reverse a list
-// evaluate a block
+// 0x0c - empty-block
+void emptyBlock(GS2Context &gs2) {
+    gs2.push(Block{});
+}
+
+// 0x0b - empty-list
+void emptyList(GS2Context &gs2) {
+    gs2.push(List{});
+}
+
+// 0x20 - negate / reverse / evaluate
 void negate(GS2Context &gs2) {
     auto value = gs2.pop();
 
@@ -58,8 +64,14 @@ void negate(GS2Context &gs2) {
     }
 }
 
-// 0x56 command
-// read-num
+// 0x0a - new-line
+void newLine(GS2Context &gs2) {
+    List list;
+    list.add('\n');
+    gs2.push(std::move(list));
+}
+
+// 0x56 - read-num
 void readNum(GS2Context &gs2) {
     auto str = makeString(gs2.pop());
     auto numberRegex = std::regex{"-?[0-9]+"};
@@ -72,8 +84,7 @@ void readNum(GS2Context &gs2) {
     gs2.push(std::stoll(match.str()));
 }
 
-// 0x57 command
-// read-nums
+// 0x57 - read-nums
 void readNums(GS2Context &gs2) {
     auto str = makeString(gs2.pop());
     auto numberRegex = std::regex{"-?[0-9]+"};
@@ -87,6 +98,13 @@ void readNums(GS2Context &gs2) {
     }
 
     gs2.push(std::move(numbers));
+}
+
+// 0x0d - space
+void space(GS2Context &gs2) {
+    List list;
+    list.add(' ');
+    gs2.push(std::move(list));
 }
 
 } // namespace gs2

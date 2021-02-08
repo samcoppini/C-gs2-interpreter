@@ -149,6 +149,38 @@ TEST_CASE("Test 0x07 - push a single character string") {
     compareString(result[1].getList(), "\x20");
 }
 
+TEST_CASE("Test 0x0a - pushing a newline to the stack") {
+    auto result = getResult("\x0a");
+
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), "\n");
+}
+
+TEST_CASE("Test 0x0b - pushing an empty list") {
+    auto result = getResult("\x0b");
+
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    CHECK(result[0].getList().empty());
+}
+
+TEST_CASE("Test 0x0c - pushing an empty block") {
+    auto result = getResult("\x0c");
+
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isBlock());
+    CHECK(result[0].getBlock().getCommands().empty());
+}
+
+TEST_CASE("Test 0x0d - pushing a space") {
+    auto result = getResult("\x0d");
+
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), " ");
+}
+
 TEST_CASE("Test 0x10 through 0x1a - pushing small numbers") {
     for (auto i = 0; i <= 10; i++) {
         char buf[2] = { static_cast<char>(0x10 + i), '\0' };
