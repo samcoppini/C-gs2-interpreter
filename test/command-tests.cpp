@@ -36,6 +36,16 @@ void compareString(const gs2::List &list, const std::string &expected) {
     }
 }
 
+gs2::List stringToList(const std::string &str) {
+    gs2::List list;
+
+    for (auto c: str) {
+        list.add(c);
+    }
+
+    return list;
+}
+
 TEST_CASE("Test 0x00 - nop") {
     gs2::List result;
 
@@ -245,6 +255,39 @@ TEST_CASE("Test 0x20 - negate / reverse / eval") {
     REQUIRE(result.size() == 1);
     REQUIRE(result[0].isNumber());
     CHECK(result[0].getNumber() == 10);
+}
+
+TEST_CASE("Test 0x2a - double / lines") {
+    // Push 1234 to the stack, then double it
+    auto result = getResult("\x2a", {1234});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 2468);
+
+    // Split a string on newlines
+    result = getResult("\x2a", {stringToList("aaaa\nbbb\n\ncc\nd\n")});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    auto splitLines = result[0].getList();
+    REQUIRE(splitLines.size() == 5);
+    REQUIRE(splitLines[0].isList());
+    compareString(splitLines[0].getList(), "aaaa");
+    REQUIRE(splitLines[1].isList());
+    compareString(splitLines[1].getList(), "bbb");
+    REQUIRE(splitLines[2].isList());
+    compareString(splitLines[2].getList(), "");
+    REQUIRE(splitLines[3].isList());
+    compareString(splitLines[3].getList(), "cc");
+    REQUIRE(splitLines[4].isList());
+    compareString(splitLines[4].getList(), "d");
+
+    result = getResult("\x2a", {gs2::List()});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    splitLines = result[0].getList();
+    REQUIRE(splitLines.size() == 1);
+    REQUIRE(splitLines[0].isList());
+    compareString(splitLines[0].getList(), "");
 }
 
 TEST_CASE("Test 0x30 - add / catenate") {

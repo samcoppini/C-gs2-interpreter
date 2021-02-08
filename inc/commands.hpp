@@ -10,6 +10,8 @@ void emptyBlock(GS2Context &);
 
 void emptyList(GS2Context &);
 
+void lines(GS2Context &);
+
 void negate(GS2Context &);
 
 void newLine(GS2Context &);

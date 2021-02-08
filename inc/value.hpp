@@ -18,6 +18,8 @@ class Value {
         Value(List list);
         Value(Block block);
 
+        bool operator!=(const Value &rhs) const;
+
         bool isNumber() const;
         int64_t getNumber() const;
 

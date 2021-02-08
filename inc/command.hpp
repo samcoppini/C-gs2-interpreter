@@ -21,8 +21,9 @@ class Command {
 
     public:
         Command(std::vector<uint8_t> bytes);
-
         Command(Block block);
+
+        bool operator!=(const Command &rhs) const;
 
         void execute(GS2Context &gs2) const;
 

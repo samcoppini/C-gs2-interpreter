@@ -19,6 +19,8 @@ class List {
         List& operator=(const List &) = default;
         List& operator=(List &&) = default;
 
+        bool operator!=(const List &rhs) const;
+
         void add(Value val);
         void concat(const List &);
         void insert(std::vector<Value>::iterator it, Value value);
@@ -33,6 +35,8 @@ class List {
         Value& operator[](size_t index);
         const Value& operator[](size_t index) const;
 
+        Value &back();
+        const Value &back() const;
         size_t size() const;
         bool empty() const;
 };

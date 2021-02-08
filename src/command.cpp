@@ -3,6 +3,8 @@
 #include "gs2context.hpp"
 #include "gs2exception.hpp"
 
+#include <type_traits>
+
 namespace gs2 {
 
 namespace {
@@ -36,6 +38,23 @@ Command::Command(std::vector<uint8_t> bytes):
 Command::Command(Block block):
     _command(std::move(block))
 {}
+
+bool Command::operator!=(const Command &rhs) const {
+    if (rhs._command.index() != _command.index()) {
+        return true;
+    }
+
+    return std::visit([&rhs] (const auto &arg) {
+        using T = std::decay_t<decltype(arg)>;
+
+        if constexpr (std::is_same_v<T, Block>) {
+            return arg != rhs.getBlock();
+        }
+        else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
+            return arg != rhs.getBytes();
+        }
+    }, _command);
+}
 
 void Command::execute(GS2Context &gs2) const {
     std::visit([&gs2] (const auto &arg) {
@@ -126,6 +145,7 @@ void Command::executeBytes(const std::vector<uint8_t> &bytes, GS2Context &gs2) {
         case 0x1e: gs2.push(64);    break;
         case 0x1f: gs2.push(256);   break;
         case 0x20: negate(gs2);     break;
+        case 0x2a: lines(gs2);      break;
         case 0x30: catenate(gs2);   break;
         case 0x56: readNum(gs2);    break;
         case 0x57: readNums(gs2);   break;

@@ -14,6 +14,26 @@ Value::Value(List list): _data(std::move(list)) {
 Value::Value(Block block): _data(std::move(block)) {
 }
 
+bool Value::operator!=(const Value &rhs) const {
+    if (_data.index() != rhs._data.index()) {
+        return true;
+    }
+
+    return std::visit([&rhs] (const auto &arg) {
+        using T = std::decay_t<decltype(arg)>;
+
+        if constexpr (std::is_same_v<T, int64_t>) {
+            return arg != rhs.getNumber();
+        }
+        else if constexpr (std::is_same_v<T, Block>) {
+            return arg != rhs.getBlock();
+        }
+        else if constexpr (std::is_same_v<T, List>) {
+            return arg != rhs.getList();
+        }
+    }, _data);
+}
+
 bool Value::isNumber() const {
     return std::holds_alternative<int64_t>(_data);
 }

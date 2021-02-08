@@ -10,6 +10,20 @@ List::List() {}
 
 List::~List() {}
 
+bool List::operator!=(const List &rhs) const {
+    if (_values.size() != rhs.size()) {
+        return true;
+    }
+
+    for (size_t i = 0; i < rhs.size(); i++) {
+        if (_values[i] != rhs[i]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void List::add(Value value) {
     _values.emplace_back(std::move(value));
 }
@@ -58,6 +72,14 @@ Value& List::operator[](size_t index) {
 
 const Value& List::operator[](size_t index) const {
     return _values[index];
+}
+
+Value& List::back() {
+    return _values.back();
+}
+
+const Value& List::back() const {
+    return _values.back();
 }
 
 size_t List::size() const {

@@ -20,6 +20,8 @@ class Block {
         Block& operator=(Block &&);
         ~Block();
 
+        bool operator!=(const Block &rhs) const;
+
         static Block parseBytes(const std::vector<uint8_t> &code);
 
         void add(Command command);

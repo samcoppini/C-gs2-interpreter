@@ -47,6 +47,32 @@ void emptyList(GS2Context &gs2) {
     gs2.push(List{});
 }
 
+// 0x2a - double / lines
+void lines(GS2Context &gs2) {
+    auto value = gs2.pop();
+
+    if (value.isNumber()) {
+        gs2.push(value.getNumber() * 2);
+    }
+    else if (value.isList()) {
+        auto &list = value.getList();
+        
+        if (!list.empty()) {
+            auto &back = list.back();
+            if (back.isNumber() && back.getNumber() == '\n') {
+                list.pop();
+            }
+        }
+
+        List newlineList;
+        newlineList.add('\n');
+        gs2.push(split(list, newlineList));
+    }
+    else {
+        throw GS2Exception{"Unsupported type for double / lines!"};
+    }
+}
+
 // 0x20 - negate / reverse / evaluate
 void negate(GS2Context &gs2) {
     auto value = gs2.pop();

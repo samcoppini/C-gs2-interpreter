@@ -52,6 +52,20 @@ Block& Block::operator=(Block &&block) {
 
 Block::~Block() {}
 
+bool Block::operator!=(const Block &rhs) const {
+    if (_commands.size() != rhs._commands.size()) {
+        return true;
+    }
+
+    for (size_t i = 0; i < rhs._commands.size(); i++) {
+        if (_commands[i] != rhs._commands[i]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 Block Block::parseBytes(const std::vector<uint8_t> &code) {
     std::vector<Block> blocks;
     std::vector<Command> final;
