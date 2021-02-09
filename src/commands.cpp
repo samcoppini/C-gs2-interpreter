@@ -143,6 +143,28 @@ void show(GS2Context &gs2) {
     gs2.push(makeList(val.str()));
 }
 
+// 0x54 - show-lines
+void showLines(GS2Context &gs2) {
+    auto listVal = gs2.pop();
+
+    if (!listVal.isList()) {
+        throw GS2Exception{"Cannot perform show-lines operation on a non-list"};
+    }
+
+    std::string str;
+    const auto &list = listVal.getList();
+
+    for (size_t i = 0; i < list.size(); i++) {
+        str += list[i].str();
+
+        if (i != list.size() - 1) {
+            str += '\n';
+        }
+    }
+
+    gs2.push(makeList(str));
+}
+
 // 0x0d - space
 void space(GS2Context &gs2) {
     List list;

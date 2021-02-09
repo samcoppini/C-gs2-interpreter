@@ -44,6 +44,7 @@ This interpreter is currently unfinished. Of gs2's many, many commands, only the
 | `50` | pop | Pops the stack |
 | `51` | pop2 | Pops the stack twice |
 | `52` | show | Pops the stack, and converts it to a string |
+| `54` | show-lines | Pops a list from the stack, converts every element in the list to a string, then joins them with newlines |
 | `56` | read-num | Pops the stack, then push a number read from the string that was popped |
 | `57` | read-nums | Pops the stack, then push a list of numbers read from the string that was popped |
 
