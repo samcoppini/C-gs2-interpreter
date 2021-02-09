@@ -363,6 +363,40 @@ TEST_CASE("Test 0x30 - add / catenate") {
     }
 }
 
+TEST_CASE("Test 0x50 - pop") {
+    auto result = getResult("\x50", {1, 2, 3});
+    REQUIRE(result.size() == 2);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 1);
+    REQUIRE(result[1].isNumber());
+    CHECK(result[1].getNumber() == 2);
+
+    result = getResult("\x50", {2, 3});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 2);
+
+    result = getResult("\x50", {3});
+    CHECK(result.empty());
+
+    // Popping an empty stack should throw an exception
+    CHECK_THROWS_AS(getResult("\x50", {}), gs2::GS2Exception);
+}
+
+TEST_CASE("Test 0x51 - pop2") {
+    auto result = getResult("\x51", {1, 2, 3});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 1);
+
+    result = getResult("\x51", {2, 3});
+    CHECK(result.empty());
+
+    // Calling pop2 on a stack with less than 2 values should throw
+    CHECK_THROWS_AS(getResult("\x51", {3}), gs2::GS2Exception);
+    CHECK_THROWS_AS(getResult("\x51", {}), gs2::GS2Exception);
+}
+
 TEST_CASE("Test 0x56 - read-num") {
     SECTION("Error cases") {
         // Can't read number off of an empty stack

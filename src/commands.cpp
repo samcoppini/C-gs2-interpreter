@@ -97,6 +97,17 @@ void newLine(GS2Context &gs2) {
     gs2.push(std::move(list));
 }
 
+// 0x50 - pop
+void pop(GS2Context &gs2) {
+    gs2.pop();
+}
+
+// 0x51 - pop2
+void pop2(GS2Context &gs2) {
+    gs2.pop();
+    gs2.pop();
+}
+
 // 0x56 - read-num
 void readNum(GS2Context &gs2) {
     auto str = makeString(gs2.pop());

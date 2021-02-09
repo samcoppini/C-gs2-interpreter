@@ -16,6 +16,10 @@ void negate(GS2Context &);
 
 void newLine(GS2Context &);
 
+void pop(GS2Context &);
+
+void pop2(GS2Context &);
+
 void readNum(GS2Context &);
 
 void readNums(GS2Context &);
