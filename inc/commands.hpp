@@ -24,6 +24,8 @@ void readNum(GS2Context &);
 
 void readNums(GS2Context &);
 
+void show(GS2Context &);
+
 void space(GS2Context &);
 
 } // namespace gs2

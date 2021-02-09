@@ -43,6 +43,7 @@ This interpreter is currently unfinished. Of gs2's many, many commands, only the
 | `30` | add / catenate | Pops the top two values of the stack, then depending on the types, do the following:<br/> **two numbers**: push the sum of the two numbers<br/> **two lists**: pushes the combined lists<br/>**two blocks**: pushes the combined blocks<br/>**list and block/number**: adds the block/number to the list and push it to the stack |
 | `50` | pop | Pops the stack |
 | `51` | pop2 | Pops the stack twice |
+| `52` | show | Pops the stack, and converts it to a string |
 | `56` | read-num | Pops the stack, then push a number read from the string that was popped |
 | `57` | read-nums | Pops the stack, then push a list of numbers read from the string that was popped |
 

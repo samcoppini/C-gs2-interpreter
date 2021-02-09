@@ -4,6 +4,14 @@
 
 namespace gs2 {
 
+List makeList(const std::string &str) {
+    List list;
+    for (auto c: str) {
+        list.add(c);
+    }
+    return list;
+}
+
 std::string makeString(Value value) {
     std::string str;
 

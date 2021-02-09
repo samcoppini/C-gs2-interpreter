@@ -5,6 +5,7 @@
 #include "gs2context.hpp"
 #include "gs2exception.hpp"
 #include "list.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 
@@ -34,16 +35,6 @@ void compareString(const gs2::List &list, const std::string &expected) {
             }
         }
     }
-}
-
-gs2::List stringToList(const std::string &str) {
-    gs2::List list;
-
-    for (auto c: str) {
-        list.add(c);
-    }
-
-    return list;
 }
 
 TEST_CASE("Test 0x00 - nop") {
@@ -265,7 +256,7 @@ TEST_CASE("Test 0x2a - double / lines") {
     CHECK(result[0].getNumber() == 2468);
 
     // Split a string on newlines
-    result = getResult("\x2a", {stringToList("aaaa\nbbb\n\ncc\nd\n")});
+    result = getResult("\x2a", {gs2::makeList("aaaa\nbbb\n\ncc\nd\n")});
     REQUIRE(result.size() == 1);
     REQUIRE(result[0].isList());
     auto splitLines = result[0].getList();
@@ -395,6 +386,26 @@ TEST_CASE("Test 0x51 - pop2") {
     // Calling pop2 on a stack with less than 2 values should throw
     CHECK_THROWS_AS(getResult("\x51", {3}), gs2::GS2Exception);
     CHECK_THROWS_AS(getResult("\x51", {}), gs2::GS2Exception);
+}
+
+TEST_CASE("Test 0x52 - show") {
+    // Converting a number to a string
+    auto result = getResult("\x52", {1234});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+
+    auto resultList = result[0].getList();
+    compareString(resultList, "1234");
+
+    // Converting a string back to a string
+    result = getResult("\x52", {gs2::makeList("abcd")});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    resultList = result[0].getList();
+    compareString(resultList, "abcd");
+
+    // Trying to convert a block should throw
+    CHECK_THROWS_AS(getResult("\x52", {gs2::Block()}), gs2::GS2Exception);
 }
 
 TEST_CASE("Test 0x56 - read-num") {

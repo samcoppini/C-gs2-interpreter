@@ -137,6 +137,12 @@ void readNums(GS2Context &gs2) {
     gs2.push(std::move(numbers));
 }
 
+// 0x52 - show
+void show(GS2Context &gs2) {
+    auto val = gs2.pop();
+    gs2.push(makeList(val.str()));
+}
+
 // 0x0d - space
 void space(GS2Context &gs2) {
     List list;
