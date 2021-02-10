@@ -108,6 +108,30 @@ void pop2(GS2Context &gs2) {
     gs2.pop();
 }
 
+// 0x65 - product / odd
+void product(GS2Context &gs2) {
+    auto val = gs2.pop();
+
+    if (val.isNumber()) {
+        gs2.push(val.getNumber() % 2 == 0 ? 0 : 1);
+    }
+    else if (val.isList()) {
+        int64_t sum = 1;
+
+        for (const auto &numVal: val.getList()) {
+            if (!numVal.isNumber()) {
+                throw GS2Exception{"Cannot sum a list with non-numbers!"};
+            }
+            sum *= numVal.getNumber();
+        }
+
+        gs2.push(sum);
+    }
+    else {
+        throw GS2Exception{"Cannot perform sum/even on a block!"};
+    }
+}
+
 // 0x56 - read-num
 void readNum(GS2Context &gs2) {
     auto str = makeString(gs2.pop());

@@ -154,6 +154,7 @@ void Command::executeBytes(const std::vector<uint8_t> &bytes, GS2Context &gs2) {
         case 0x56: readNum(gs2);    break;
         case 0x57: readNums(gs2);   break;
         case 0x64: sum(gs2);        break;
+        case 0x65: product(gs2);    break;
 
         default:
             throw GS2Exception{"Unhandled command byte: " + std::to_string(bytes[0])};

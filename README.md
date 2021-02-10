@@ -47,6 +47,7 @@ This interpreter is currently unfinished. Of gs2's many, many commands, only the
 | `54` | show-lines | Pops a list from the stack, converts every element in the list to a string, then joins them with newlines |
 | `56` | read-num | Pops the stack, then push a number read from the string that was popped |
 | `57` | read-nums | Pops the stack, then push a list of numbers read from the string that was popped |
-| `64` | sum / even | Pops the stack, then based on the type, do the following:<br/>**number**: push 1 if the number is odd, otherwise push 0<br/>**list**: push the sum of the numbers in the list |
+| `64` | sum / even | Pops the stack, then based on the type, do the following:<br/>**number**: push 1 if the number is even, otherwise push 0<br/>**list**: push the sum of the numbers in the list |
+| `65` | product / odd | Pops the stack, then based on the type, do the following:<br/>**number**: push 1 if the number is odd, otherwise push 0<br/>**list**: push the product of the numbers in the list |
 
 All other commands are not yet implemented.

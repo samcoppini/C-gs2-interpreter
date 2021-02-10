@@ -522,3 +522,28 @@ TEST_CASE("Test 0x64 - sum / even") {
     // Blocks should throw
     CHECK_THROWS_AS(getResult("\x64", {gs2::Block()}), gs2::GS2Exception);
 }
+
+TEST_CASE("Test 0x65 - sum / even") {
+    auto result = getResult("\x65", {111});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 1);
+
+    result = getResult("\x65", {222});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 0);
+
+    result = getResult("\x04\x01\x02\x03\x04\x05\x65");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 24);
+
+    // Trying to multiply a list with a non-number should throw
+    gs2::List list;
+    list.add(list);
+    CHECK_THROWS_AS(getResult("\x65", {list}), gs2::GS2Exception);
+
+    // Blocks should throw
+    CHECK_THROWS_AS(getResult("\x65", {gs2::Block()}), gs2::GS2Exception);
+}
