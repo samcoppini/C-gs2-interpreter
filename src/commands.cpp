@@ -172,4 +172,28 @@ void space(GS2Context &gs2) {
     gs2.push(std::move(list));
 }
 
+// 0x64 - sum / even
+void sum(GS2Context &gs2) {
+    auto val = gs2.pop();
+
+    if (val.isNumber()) {
+        gs2.push(val.getNumber() % 2 == 0 ? 1 : 0);
+    }
+    else if (val.isList()) {
+        int64_t sum = 0;
+
+        for (const auto &numVal: val.getList()) {
+            if (!numVal.isNumber()) {
+                throw GS2Exception{"Cannot sum a list with non-numbers!"};
+            }
+            sum += numVal.getNumber();
+        }
+
+        gs2.push(sum);
+    }
+    else {
+        throw GS2Exception{"Cannot perform sum/even on a block!"};
+    }
+}
+
 } // namespace gs2

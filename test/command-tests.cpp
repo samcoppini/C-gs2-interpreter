@@ -497,3 +497,28 @@ TEST_CASE("Test 0x57 - read-nums") {
         CHECK(numList[3].getNumber() == -14);
     }
 }
+
+TEST_CASE("Test 0x64 - sum / even") {
+    auto result = getResult("\x64", {111});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 0);
+
+    result = getResult("\x64", {222});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 1);
+
+    result = getResult("\x04\x01\x02\x03\x04\x05\x64");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 10);
+
+    // Trying to sum a list with a non-number should throw
+    gs2::List list;
+    list.add(list);
+    CHECK_THROWS_AS(getResult("\x64", {list}), gs2::GS2Exception);
+
+    // Blocks should throw
+    CHECK_THROWS_AS(getResult("\x64", {gs2::Block()}), gs2::GS2Exception);
+}

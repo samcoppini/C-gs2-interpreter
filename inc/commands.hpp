@@ -30,4 +30,6 @@ void showLines(GS2Context &);
 
 void space(GS2Context &);
 
+void sum(GS2Context &);
+
 } // namespace gs2
