@@ -47,13 +47,15 @@ bool subListEqual(const List &list1, const List &list2, size_t start) {
     return true;
 }
 
-List split(List toSplit, const List &sep) {
+List split(List toSplit, const List &sep, bool clean) {
     List result;
     result.add(List{});
 
     for (size_t i = 0; i < toSplit.size(); i++) {
         if (subListEqual(sep, toSplit, i)) {
-            result.add(List{});
+            if (!clean || !result.back().getList().empty()) {
+                result.add(List{});
+            }
             i += sep.size() - 1;
         }
         else {
@@ -61,7 +63,32 @@ List split(List toSplit, const List &sep) {
         }
     }
 
+    if (clean && result.back().getList().empty()) {
+        result.pop();
+    }
+
     return result;
+}
+
+List stepOver(List list, int64_t stepSize) {
+    if (stepSize == 0) {
+        throw GS2Exception{"Step size cannot be zero!"};
+    }
+
+    List newList;
+
+    if (stepSize > 0) {
+        for (size_t i = 0; i < list.size(); i += stepSize) {
+            newList.add(std::move(list[i]));
+        }
+    }
+    else {
+        for (size_t i = list.size() - 1; i < list.size(); i += stepSize) {
+            newList.add(std::move(list[i]));
+        }
+    }
+
+    return newList;
 }
 
 } // namespace gs2

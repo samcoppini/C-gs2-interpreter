@@ -25,6 +25,7 @@ class List {
         void concat(const List &);
         void insert(std::vector<Value>::iterator it, Value value);
         Value pop();
+        void clear();
         void reverse();
 
         std::vector<Value>::iterator begin();

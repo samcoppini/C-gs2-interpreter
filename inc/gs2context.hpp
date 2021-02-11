@@ -16,6 +16,8 @@ class GS2Context {
         void push(Value value);
 
         Value pop();
+
+        void do_map(const Block &block, List val);
 };
 
 } // namespace gs2

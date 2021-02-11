@@ -73,6 +73,32 @@ void lines(GS2Context &gs2) {
     }
 }
 
+// 0x34 - mod / step / clean-split / map
+void mod(GS2Context &gs2) {
+    auto y = gs2.pop();
+    auto x = gs2.pop();
+
+    if (!x.isList() && y.isList()) {
+        std::swap(x, y);
+    }
+
+    if (x.isNumber() && y.isNumber()) {
+        gs2.push(x.getNumber() % y.getNumber());
+    }
+    else if (x.isList() && y.isNumber()) {
+        gs2.push(stepOver(std::move(x.getList()), y.getNumber()));
+    }
+    else if (x.isList() && y.isList()) {
+        gs2.push(split(std::move(x.getList()), y.getList(), true));
+    }
+    else if (x.isList() && y.isBlock()) {
+        gs2.do_map(y.getBlock(), std::move(x.getList()));
+    }
+    else {
+        throw GS2Exception{"Unsupported types for mod/step/clean-split/map!"};
+    }
+}
+
 // 0x20 - negate / reverse / evaluate
 void negate(GS2Context &gs2) {
     auto value = gs2.pop();

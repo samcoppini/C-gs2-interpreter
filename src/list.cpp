@@ -46,6 +46,10 @@ Value List::pop() {
     return value;
 }
 
+void List::clear() {
+    _values.clear();
+}
+
 void List::reverse() {
     std::reverse(_values.begin(), _values.end());
 }

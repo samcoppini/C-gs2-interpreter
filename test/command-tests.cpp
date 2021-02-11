@@ -354,6 +354,83 @@ TEST_CASE("Test 0x30 - add / catenate") {
     }
 }
 
+TEST_CASE("Test 0x34 - mod / step / clean-split / map") {
+    SECTION("mod") {
+        auto result = getResult("\x34", {18715338, 16252});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isNumber());
+        CHECK(result[0].getNumber() == 9286);
+    }
+
+    SECTION("step") {
+        gs2::List list;
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+
+        auto result = getResult("\x34", {list, 2});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        auto skippedList = result[0].getList();
+        REQUIRE(skippedList.size() == 3);
+        REQUIRE(skippedList[0].isNumber());
+        CHECK(skippedList[0].getNumber() == 1);
+        REQUIRE(skippedList[1].isNumber());
+        CHECK(skippedList[1].getNumber() == 3);
+        REQUIRE(skippedList[2].isNumber());
+        CHECK(skippedList[2].getNumber() == 5);
+
+        result = getResult("\x34", {-3, list});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        skippedList = result[0].getList();
+        REQUIRE(skippedList.size() == 2);
+        REQUIRE(skippedList[0].isNumber());
+        CHECK(skippedList[0].getNumber() == 5);
+        REQUIRE(skippedList[1].isNumber());
+        CHECK(skippedList[1].getNumber() == 2);
+
+        // Zero is an invalid step size
+        CHECK_THROWS_AS(getResult("\x34", {list, 0}), gs2::GS2Exception);
+    }
+
+    SECTION("clean-split") {
+        gs2::List toSplit = gs2::makeList("blahahahablahblah");
+        gs2::List sep = gs2::makeList("ah");
+
+        auto result = getResult("\x34", {toSplit, sep});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+
+        auto list = result[0].getList();
+        REQUIRE(list.size() == 3);
+        REQUIRE(list[0].isList());
+        compareString(list[0].getList(), "bl");
+        REQUIRE(list[1].isList());
+        compareString(list[1].getList(), "abl");
+        REQUIRE(list[2].isList());
+        compareString(list[2].getList(), "bl");
+    }
+
+    SECTION("map") {
+        auto result = getResult({"\x04\x00\x01\x02\x03\x05\x08\x2a\x09\x34", 10});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        auto mappedList = result[0].getList();
+        REQUIRE(mappedList.size() == 4);
+        REQUIRE(mappedList[0].isNumber());
+        REQUIRE(mappedList[0].getNumber() == 0);
+        REQUIRE(mappedList[1].isNumber());
+        REQUIRE(mappedList[1].getNumber() == 2);
+        REQUIRE(mappedList[2].isNumber());
+        REQUIRE(mappedList[2].getNumber() == 4);
+        REQUIRE(mappedList[3].isNumber());
+        REQUIRE(mappedList[3].getNumber() == 6);
+    }
+}
+
 TEST_CASE("Test 0x50 - pop") {
     auto result = getResult("\x50", {1, 2, 3});
     REQUIRE(result.size() == 2);
