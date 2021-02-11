@@ -2,3 +2,4 @@ build*/
 dist*/
 subprojects/*
 !subprojects/*.wrap
+.vscode/
