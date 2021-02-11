@@ -66,6 +66,27 @@ TEST_CASE("Testing code parsing") {
     testFail("\x09");
 }
 
+TEST_CASE("Testing different modes") {
+    // Line mode
+    auto commands = parseBlock("\x30Hey\x05?").getCommands();
+
+    REQUIRE(commands.size() == 4);
+    REQUIRE(commands[0].isBytes());
+    CHECK(commands[0].getBytes() == std::vector<uint8_t>{ 0x2a });
+    REQUIRE(commands[2].isBytes());
+    CHECK(commands[2].getBytes() == std::vector<uint8_t>{ 0x34 });
+    REQUIRE(commands[3].isBytes());
+    CHECK(commands[3].getBytes() == std::vector<uint8_t>{ 0x54 });
+    REQUIRE(commands[1].isBlock());
+    auto blockCommands = commands[1].getBlock().getCommands();
+    REQUIRE(blockCommands.size() == 2);
+    REQUIRE(blockCommands[0].isBytes());
+    CHECK(blockCommands[0].getBytes() == std::vector<uint8_t>{ 0x04, 'H', 'e', 'y', 0x05 });
+    REQUIRE(blockCommands[1].isBytes());
+    CHECK(blockCommands[1].getBytes() == std::vector<uint8_t>{ '?' });
+
+}
+
 TEST_CASE("Testing block parses") {
     // Simple block case
     auto commands = parseBlock("\x08hey\x09").getCommands();

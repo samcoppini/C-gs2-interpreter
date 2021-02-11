@@ -282,20 +282,23 @@ TEST_CASE("Test 0x2a - double / lines") {
 }
 
 TEST_CASE("Test 0x30 - add / catenate") {
+    // Note that having 0x30 at the start of a parsed block triggers line mode,
+    // so to avoid that a nop (0x00) is inserted before each 0x30
+
     SECTION("Error cases") {
         // Can't add empty stack
-        CHECK_THROWS_AS(getResult("\x30"), gs2::GS2Exception);
+        CHECK_THROWS_AS(getResult({"\x00\x30", 2}), gs2::GS2Exception);
 
         // Can't add stack with only one value
-        CHECK_THROWS_AS(getResult("\x30", {10}), gs2::GS2Exception);
+        CHECK_THROWS_AS(getResult({"\x00\x30", 2}, {10}), gs2::GS2Exception);
 
         // Can't add block and int
-        CHECK_THROWS_AS(getResult("\x30", {gs2::Block{}, 10}), gs2::GS2Exception);
+        CHECK_THROWS_AS(getResult({"\x00\x30", 2}, {gs2::Block{}, 10}), gs2::GS2Exception);
     }
 
     SECTION("Successful cases") {
         // Adding two numbers
-        auto result = getResult("\x30", {12, 30});
+        auto result = getResult({"\x00\x30", 2}, {12, 30});
         REQUIRE(result.size() == 1);
         REQUIRE(result[0].isNumber());
         CHECK(result[0].getNumber() == 42);
@@ -304,7 +307,7 @@ TEST_CASE("Test 0x30 - add / catenate") {
         gs2::List list1, list2;
         list1.add(10);
         list2.add(20);
-        result = getResult("\x30", {list1, list2});
+        result = getResult({"\x00\x30", 2}, {list1, list2});
         REQUIRE(result.size() == 1);
         REQUIRE(result[0].isList());
         auto resultList = result[0].getList();
@@ -318,7 +321,7 @@ TEST_CASE("Test 0x30 - add / catenate") {
         gs2::Block block1, block2;
         block1.add(std::vector<uint8_t>{10});
         block2.add(std::vector<uint8_t>{1, 11});
-        result = getResult("\x30", {block1, block2});
+        result = getResult({"\x00\x30", 2}, {block1, block2});
         REQUIRE(result.size() == 1);
         REQUIRE(result[0].isBlock());
         auto resultBlock = result[0].getBlock();
@@ -330,7 +333,7 @@ TEST_CASE("Test 0x30 - add / catenate") {
         CHECK(resultCommands[1].getBytes() == std::vector<uint8_t>{1, 11});
 
         // Adding a number to the end of a list
-        result = getResult("\x30", {list1, 11});
+        result = getResult({"\x00\x30", 2}, {list1, 11});
         REQUIRE(result.size() == 1);
         REQUIRE(result[0].isList());
         resultList = result[0].getList();
@@ -341,7 +344,7 @@ TEST_CASE("Test 0x30 - add / catenate") {
         CHECK(resultList[1].getNumber() == 11);
 
         // Adding a number to the beginning of a list
-        result = getResult("\x30", {9, list1});
+        result = getResult({"\x00\x30", 2}, {9, list1});
         REQUIRE(result.size() == 1);
         REQUIRE(result[0].isList());
         resultList = result[0].getList();

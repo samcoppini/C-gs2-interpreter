@@ -8,8 +8,32 @@ namespace gs2 {
 
 namespace {
 
-std::optional<size_t> findUnstartedString(const std::vector<uint8_t> &code) {
-    for (size_t i = 0; i < code.size(); ++i) {
+enum class FileMode {
+    Normal,
+    LineMode,
+};
+
+constexpr uint8_t LINE_MODE_START_BYTE = 0x30;
+
+std::pair<size_t, FileMode> getFileMode(const std::vector<uint8_t> &code) {
+    auto mode = FileMode::Normal;
+
+    if (!code.empty()) {
+        if (code[0] == LINE_MODE_START_BYTE) {
+            mode = FileMode::LineMode;
+        }
+    }
+
+    if (mode != FileMode::Normal) {
+        return {1, mode};
+    }
+    else {
+        return {0, mode};
+    }
+}
+
+std::optional<size_t> findUnstartedString(const std::vector<uint8_t> &code, size_t startIndex) {
+    for (size_t i = startIndex; i < code.size(); ++i) {
         if (isStringEnd(code[i])) {
             return i;
         }
@@ -72,11 +96,11 @@ Block Block::parseBytes(const std::vector<uint8_t> &code) {
 
     blocks.emplace_back();
 
-    size_t startIndex = 0;
+    auto [startIndex, mode] = getFileMode(code);
 
-    if (auto stringEnd = findUnstartedString(code); stringEnd) {
+    if (auto stringEnd = findUnstartedString(code, startIndex); stringEnd) {
         std::vector<uint8_t> string = { STRING_START_CMD };
-        string.insert(string.end(), code.begin(), code.begin() + *stringEnd + 1);
+        string.insert(string.end(), code.begin() + startIndex, code.begin() + *stringEnd + 1);
         blocks.back().add(Command{std::move(string)});
         startIndex = *stringEnd + 1;
     }
@@ -157,7 +181,18 @@ Block Block::parseBytes(const std::vector<uint8_t> &code) {
     }
 
     auto block = std::move(blocks[0]);
-    return block;
+
+    if (mode == FileMode::LineMode) {
+        Block finalBlock;
+        finalBlock.add(Command({0x2a}));
+        finalBlock.add(std::move(block));
+        finalBlock.add(Command({0x34}));
+        finalBlock.add(Command({0x54}));
+        return finalBlock;
+    }
+    else {
+        return block;
+    }
 }
 
 void Block::execute(GS2Context &gs2) const {
