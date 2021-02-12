@@ -16,20 +16,14 @@ enum class FileMode {
 constexpr uint8_t LINE_MODE_START_BYTE = 0x30;
 
 std::pair<size_t, FileMode> getFileMode(const std::vector<uint8_t> &code) {
-    auto mode = FileMode::Normal;
-
     if (!code.empty()) {
         if (code[0] == LINE_MODE_START_BYTE) {
-            mode = FileMode::LineMode;
+            return {1, FileMode::LineMode};
         }
     }
 
-    if (mode != FileMode::Normal) {
-        return {1, mode};
-    }
-    else {
-        return {0, mode};
-    }
+    // Default case
+    return {0, FileMode::Normal};
 }
 
 std::optional<size_t> findUnstartedString(const std::vector<uint8_t> &code, size_t startIndex) {
