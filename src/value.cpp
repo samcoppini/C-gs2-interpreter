@@ -5,7 +5,10 @@
 
 namespace gs2 {
 
-Value::Value(int64_t num): _data(num) {
+Value::Value(int64_t num): _data(IntType(num)) {
+}
+
+Value::Value(IntType num): _data(std::move(num)) {
 }
 
 Value::Value(List list): _data(std::move(list)) {
@@ -22,7 +25,7 @@ bool Value::operator!=(const Value &rhs) const {
     return std::visit([&rhs] (const auto &arg) {
         using T = std::decay_t<decltype(arg)>;
 
-        if constexpr (std::is_same_v<T, int64_t>) {
+        if constexpr (std::is_same_v<T, IntType>) {
             return arg != rhs.getNumber();
         }
         else if constexpr (std::is_same_v<T, Block>) {
@@ -35,11 +38,15 @@ bool Value::operator!=(const Value &rhs) const {
 }
 
 bool Value::isNumber() const {
-    return std::holds_alternative<int64_t>(_data);
+    return std::holds_alternative<IntType>(_data);
 }
 
-int64_t Value::getNumber() const {
-    return std::get<int64_t>(_data);
+const Value::IntType& Value::getNumber() const {
+    return std::get<IntType>(_data);
+}
+
+Value::IntType& Value::getNumber() {
+    return std::get<IntType>(_data);
 }
 
 bool Value::isList() const {
@@ -82,14 +89,14 @@ std::string Value::str(bool nested) const {
         else if constexpr (std::is_same_v<T, Block>) {
             throw GS2Exception{"Cannot turn a block to string!"};
         }
-        else if constexpr (std::is_same_v<T, int64_t>) {
+        else if constexpr (std::is_same_v<T, IntType>) {
             if (nested) {
                 std::string str;
                 str += static_cast<char>(arg);
                 return str;
             }
             else {
-                return std::to_string(arg);
+                return arg.str();
             }
         }
     }, _data);

@@ -9,6 +9,8 @@ project(
     ]
 )
 
+boost_dep = dependency('boost')
+
 catch2_proj = subproject('catch2')
 catch2_dep = catch2_proj.get_variable('catch2_dep')
 
@@ -28,11 +30,17 @@ gs2_lib = static_library(
     'gs2_lib',
     gs2_src,
     include_directories: gs2_inc,
+    dependencies: [
+        boost_dep,
+    ],
 )
 
 gs2_dep = declare_dependency(
     link_with: gs2_lib,
     include_directories: gs2_inc,
+    dependencies: [
+        boost_dep,
+    ],
 )
 
 gs2_exe = executable(

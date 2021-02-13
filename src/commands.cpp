@@ -13,7 +13,11 @@ void abs(GS2Context &gs2) {
     auto value = gs2.pop();
 
     if (value.isNumber()) {
-        gs2.push(std::abs(value.getNumber()));
+        auto &num = value.getNumber();
+        if (num < 0) {
+            num *= -1;
+        }
+        gs2.push(value);
     }
     else if (value.isList()) {
         if (!value.getList().empty()) {
@@ -32,7 +36,8 @@ void catenate(GS2Context &gs2) {
     auto x = gs2.pop();
 
     if (x.isNumber() && y.isNumber()) {
-        gs2.push(x.getNumber() + y.getNumber());
+        x.getNumber() += y.getNumber();
+        gs2.push(std::move(x));
     }
     else if (x.isList() && y.isList()) {
         x.getList().concat(y.getList());
@@ -75,7 +80,10 @@ void head(GS2Context &gs2) {
     auto value = gs2.pop();
 
     if (value.isNumber()) {
-        gs2.push(~value.getNumber());
+        auto &num = value.getNumber();
+        num += 1;
+        num *= -1;
+        gs2.push(std::move(value));
     }
     else if (value.isList()) {
         auto &list = value.getList();
@@ -94,18 +102,13 @@ void last(GS2Context &gs2) {
     auto value = gs2.pop();
 
     if (value.isNumber()) {
-        auto num = std::abs(value.getNumber());
-
         List digits;
-        if (num == 0) {
-            digits.add(0);
-        }
-        else {
-            while (num > 0) {
-                digits.add(num % 10);
-                num /= 10;
+        auto numStr = value.getNumber().str();
+        for (auto &digit: numStr) {
+            if (!std::isdigit(digit)) {
+                continue;
             }
-            digits.reverse();
+            digits.add(digit - '0');
         }
         gs2.push(std::move(digits));
     }
@@ -122,7 +125,8 @@ void lines(GS2Context &gs2) {
     auto value = gs2.pop();
 
     if (value.isNumber()) {
-        gs2.push(value.getNumber() * 2);
+        value.getNumber() *= 2;
+        gs2.push(std::move(value));
     }
     else if (value.isList()) {
         auto &list = value.getList();
@@ -153,10 +157,11 @@ void mod(GS2Context &gs2) {
     }
 
     if (x.isNumber() && y.isNumber()) {
-        gs2.push(x.getNumber() % y.getNumber());
+        x.getNumber() %= y.getNumber();
+        gs2.push(std::move(x));
     }
     else if (x.isList() && y.isNumber()) {
-        gs2.push(stepOver(std::move(x.getList()), y.getNumber()));
+        gs2.push(stepOver(std::move(x.getList()), y.getNumber().convert_to<int64_t>()));
     }
     else if (x.isList() && y.isList()) {
         gs2.push(split(std::move(x.getList()), y.getList(), true));
@@ -174,7 +179,8 @@ void negate(GS2Context &gs2) {
     auto value = gs2.pop();
 
     if (value.isNumber()) {
-        gs2.push(-value.getNumber());
+        value.getNumber() *= -1;
+        gs2.push(std::move(value));
     }
     else if (value.isList()) {
         value.getList().reverse();
@@ -212,7 +218,7 @@ void product(GS2Context &gs2) {
         gs2.push(val.getNumber() % 2 == 0 ? 0 : 1);
     }
     else if (val.isList()) {
-        int64_t sum = 1;
+        Value::IntType sum = 1;
 
         for (const auto &numVal: val.getList()) {
             if (!numVal.isNumber()) {
@@ -335,7 +341,7 @@ void sum(GS2Context &gs2) {
         gs2.push(val.getNumber() % 2 == 0 ? 1 : 0);
     }
     else if (val.isList()) {
-        int64_t sum = 0;
+        Value::IntType sum = 0;
 
         for (const auto &numVal: val.getList()) {
             if (!numVal.isNumber()) {
