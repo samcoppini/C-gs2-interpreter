@@ -230,6 +230,12 @@ void show(GS2Context &gs2) {
     gs2.push(makeList(val.str()));
 }
 
+// 0x58 - show-line
+void showLine(GS2Context &gs2) {
+    auto val = gs2.pop();
+    gs2.push(makeList(val.str() + '\n'));
+}
+
 // 0x54 - show-lines
 void showLines(GS2Context &gs2) {
     auto listVal = gs2.pop();

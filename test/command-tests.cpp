@@ -652,6 +652,26 @@ TEST_CASE("Test 0x57 - read-nums") {
     }
 }
 
+TEST_CASE("Test 0x58 - show-line") {
+    // Converting a number to a string
+    auto result = getResult("\x58", {1234});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+
+    auto resultList = result[0].getList();
+    compareString(resultList, "1234\n");
+
+    // Converting a string back to a string
+    result = getResult("\x58", {gs2::makeList("abcd")});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    resultList = result[0].getList();
+    compareString(resultList, "abcd\n");
+
+    // Trying to convert a block should throw
+    CHECK_THROWS_AS(getResult("\x58", {gs2::Block()}), gs2::GS2Exception);
+}
+
 TEST_CASE("Test 0x64 - sum / even") {
     auto result = getResult("\x64", {111});
     REQUIRE(result.size() == 1);

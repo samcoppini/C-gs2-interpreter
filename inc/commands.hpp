@@ -34,6 +34,8 @@ void readNums(GS2Context &);
 
 void show(GS2Context &);
 
+void showLine(GS2Context &);
+
 void showLines(GS2Context &);
 
 void space(GS2Context &);
