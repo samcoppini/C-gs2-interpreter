@@ -265,4 +265,23 @@ void sum(GS2Context &gs2) {
     }
 }
 
+// 0x22 - not / tail
+void tail(GS2Context &gs2) {
+    auto val = gs2.pop();
+
+    if (val.isNumber()) {
+        gs2.push(val.getNumber() ? 0 : 1);
+    }
+    else if (val.isList()) {
+        auto& list = val.getList();
+        if (list.empty()) {
+            throw GS2Exception{"Cannot get the tail of an empty list!"};
+        }
+        gs2.push(std::move(list.back()));
+    }
+    else {
+        throw GS2Exception{"Cannot perform not/tail on a block!"};
+    }
+}
+
 } // namespace gs2

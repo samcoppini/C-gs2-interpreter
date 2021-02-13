@@ -40,6 +40,7 @@ This interpreter is currently unfinished. Of gs2's many, many commands, only the
 | `1f` | 256 | Pushes the number `256` to the stack |
 | `20` | negate / reverse / eval | Pops the stack, then based on the value, do the following:<br/>**number**: negate the number<br/>**list**: reverse the list<br/>**block**: execute the block |
 | `21` | bnot / head | Pops the stack, then based on the value, do the following:<br/>**number**: push the binary negation of the number<br/>**list**: push the first element of the list to the stack |
+| `22` | not / tail | Pops the stack, then based on the value, do the following:<br/>**number**: push the logical negation of the number<br/>**list**: push the last element of the list to the stack |
 | `2a` | double / lines | Pops the stack, then based on the value, do the following:<br/>**number**: double the number and push it to the stack<br/>**list**: split a string on newlines, and push the list of strings to the stack |
 | `30` | add / catenate | Pops the top two values of the stack, then depending on the types, do the following:<br/> **two numbers**: push the sum of the two numbers<br/> **two lists**: pushes the combined lists<br/>**two blocks**: pushes the combined blocks<br/>**list and block/number**: adds the block/number to the list and push it to the stack |
 | `34` | mod / step / clean-split / map | Does a lot of things |

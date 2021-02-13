@@ -38,4 +38,6 @@ void space(GS2Context &);
 
 void sum(GS2Context &);
 
+void tail(GS2Context &);
+
 } // namespace gs2

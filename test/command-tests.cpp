@@ -272,6 +272,34 @@ TEST_CASE("Test 0x21 - bnot / head") {
     REQUIRE_THROWS_AS(getResult("\x21", {gs2::Block()}), gs2::GS2Exception);
 }
 
+TEST_CASE("Test 0x22 - not / head") {
+    auto result = getResult("\x22", {0});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 1);
+
+    result = getResult("\x22", {1});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 0);
+
+    gs2::List sampleList;
+    sampleList.add(10);
+    sampleList.add(gs2::Block());
+    sampleList.add(gs2::makeList("test"));
+
+    result = getResult("\x22", {sampleList});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), "test");
+
+    // 0x22 cannot handle empty list
+    REQUIRE_THROWS_AS(getResult("\x21", {gs2::List{}}), gs2::GS2Exception);
+
+    // 0x22 cannot handle blocks
+    REQUIRE_THROWS_AS(getResult("\x21", {gs2::Block()}), gs2::GS2Exception);
+}
+
 TEST_CASE("Test 0x2a - double / lines") {
     // Push 1234 to the stack, then double it
     auto result = getResult("\x2a", {1234});
