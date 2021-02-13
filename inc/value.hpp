@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Block.hpp"
-#include "List.hpp"
+#include "block.hpp"
+#include "list.hpp"
 
 #include <cstdint>
 #include <string>
