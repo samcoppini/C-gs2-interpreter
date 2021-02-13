@@ -89,6 +89,34 @@ void head(GS2Context &gs2) {
     }
 }
 
+// 0x24 - digits / last
+void last(GS2Context &gs2) {
+    auto value = gs2.pop();
+
+    if (value.isNumber()) {
+        auto num = std::abs(value.getNumber());
+
+        List digits;
+        if (num == 0) {
+            digits.add(0);
+        }
+        else {
+            while (num > 0) {
+                digits.add(num % 10);
+                num /= 10;
+            }
+            digits.reverse();
+        }
+        gs2.push(std::move(digits));
+    }
+    else if (value.isList()) {
+        gs2.push(value.getList().pop());
+    }
+    else {
+        throw GS2Exception{"Blocks are not supported for digits / last"};
+    }
+}
+
 // 0x2a - double / lines
 void lines(GS2Context &gs2) {
     auto value = gs2.pop();

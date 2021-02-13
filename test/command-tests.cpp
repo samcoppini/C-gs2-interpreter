@@ -322,6 +322,24 @@ TEST_CASE("Test 0x23 - abs / init") {
     REQUIRE_THROWS_AS(getResult("\x23", {gs2::Block()}), gs2::GS2Exception);
 }
 
+TEST_CASE("Test 0x24 - digits / last") {
+    auto result = getResult("\x24", {8590});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), {"\x08\x05\x09\x00", 4});
+
+    result =  getResult("\x24", {gs2::makeList("test!")});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == '!');
+
+    // Last operation should fail on an empty list
+    REQUIRE_THROWS_AS(getResult("\x24", {gs2::List{}}), gs2::GS2Exception);
+
+    // Blocks not supported with 0x24 command
+    REQUIRE_THROWS_AS(getResult("\x24", {gs2::Block()}), gs2::GS2Exception);
+}
+
 TEST_CASE("Test 0x2a - double / lines") {
     // Push 1234 to the stack, then double it
     auto result = getResult("\x2a", {1234});

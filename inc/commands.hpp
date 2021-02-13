@@ -16,6 +16,8 @@ void emptyList(GS2Context &);
 
 void head(GS2Context &);
 
+void last(GS2Context &);
+
 void lines(GS2Context &);
 
 void negate(GS2Context &);
