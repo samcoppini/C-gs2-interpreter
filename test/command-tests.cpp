@@ -294,10 +294,32 @@ TEST_CASE("Test 0x22 - not / head") {
     compareString(result[0].getList(), "test");
 
     // 0x22 cannot handle empty list
-    REQUIRE_THROWS_AS(getResult("\x21", {gs2::List{}}), gs2::GS2Exception);
+    REQUIRE_THROWS_AS(getResult("\x22", {gs2::List{}}), gs2::GS2Exception);
 
     // 0x22 cannot handle blocks
-    REQUIRE_THROWS_AS(getResult("\x21", {gs2::Block()}), gs2::GS2Exception);
+    REQUIRE_THROWS_AS(getResult("\x22", {gs2::Block()}), gs2::GS2Exception);
+}
+
+TEST_CASE("Test 0x23 - abs / init") {
+    auto result = getResult("\x23", {-1234});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 1234);
+
+    gs2::List list = gs2::makeList("fool!");
+    result = getResult("\x23\x23", {list});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), "foo");
+
+    gs2::List emptyList;
+    result = getResult("\x23", {emptyList});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    CHECK(result[0].getList().empty());
+
+    // Blocks are invalid for 0x23
+    REQUIRE_THROWS_AS(getResult("\x23", {gs2::Block()}), gs2::GS2Exception);
 }
 
 TEST_CASE("Test 0x2a - double / lines") {

@@ -8,6 +8,24 @@
 
 namespace gs2 {
 
+// 0x22 - abs / init
+void abs(GS2Context &gs2) {
+    auto value = gs2.pop();
+
+    if (value.isNumber()) {
+        gs2.push(std::abs(value.getNumber()));
+    }
+    else if (value.isList()) {
+        if (!value.getList().empty()) {
+            value.getList().pop();
+        }
+        gs2.push(std::move(value));
+    }
+    else {
+        throw GS2Exception{"Blocks are not supported for abs / init"};
+    }
+}
+
 // 0x30 - add / catenate
 void catenate(GS2Context &gs2) {
     auto y = gs2.pop();

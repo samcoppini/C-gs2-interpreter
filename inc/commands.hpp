@@ -4,6 +4,8 @@ namespace gs2 {
 
 class GS2Context;
 
+void abs(GS2Context &);
+
 void catenate(GS2Context &);
 
 void emptyBlock(GS2Context &);
