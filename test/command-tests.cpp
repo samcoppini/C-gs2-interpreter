@@ -761,3 +761,13 @@ TEST_CASE("Test 0x65 - sum / even") {
     // Blocks should throw
     CHECK_THROWS_AS(getResult("\x65", {gs2::Block()}), gs2::GS2Exception);
 }
+
+TEST_CASE("Test 0xb2 - counter") {
+    auto result = getResult("\xb2\xb2\xb2\xb2\xb2");
+    REQUIRE(result.size() == 5);
+
+    for (int i = 0; i < 5; i++) {
+        REQUIRE(result[i].isNumber());
+        REQUIRE(result[i].getNumber() == i + 1);
+    }
+}

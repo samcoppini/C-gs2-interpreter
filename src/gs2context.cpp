@@ -4,7 +4,8 @@
 namespace gs2 {
 
 GS2Context::GS2Context(List &stack):
-    _stack(stack)
+    _stack(stack),
+    _counter(1)
 {}
 
 void GS2Context::push(Value value) {
@@ -13,6 +14,10 @@ void GS2Context::push(Value value) {
 
 Value GS2Context::pop() {
     return _stack.pop();
+}
+
+int GS2Context::getAndIncCounter() {
+    return _counter++;
 }
 
 void GS2Context::do_map(const Block &block, List list) {

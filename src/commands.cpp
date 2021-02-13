@@ -55,6 +55,11 @@ void catenate(GS2Context &gs2) {
     }
 }
 
+// 0xb2 - counter
+void counter(GS2Context &gs2) {
+    gs2.push(gs2.getAndIncCounter());
+}
+
 // 0x0c - empty-block
 void emptyBlock(GS2Context &gs2) {
     gs2.push(Block{});
