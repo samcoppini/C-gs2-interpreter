@@ -38,6 +38,8 @@ void showLine(GS2Context &);
 
 void showLines(GS2Context &);
 
+void showWords(GS2Context &);
+
 void space(GS2Context &);
 
 void sum(GS2Context &);

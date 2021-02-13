@@ -582,6 +582,26 @@ TEST_CASE("Test 0x54 - show-lines") {
     CHECK_THROWS_AS(getResult("\x54", {11}), gs2::GS2Exception);
 }
 
+TEST_CASE("Test 0x55 - show-lines") {
+    gs2::List list;
+    list.add(gs2::makeList("Hey"));
+    list.add(gs2::makeList("What?"));
+    list.add(gs2::makeList(""));
+    list.add(gs2::makeList("Blah"));
+
+    auto result = getResult("\x55", {list});
+
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), "Hey What?  Blah");
+
+    // Empty stack should throw
+    CHECK_THROWS_AS(getResult("\x55"), gs2::GS2Exception);
+
+    // Trying show-lines on a block should throw
+    CHECK_THROWS_AS(getResult("\x55", {11}), gs2::GS2Exception);
+}
+
 TEST_CASE("Test 0x56 - read-num") {
     SECTION("Error cases") {
         // Can't read number off of an empty stack
