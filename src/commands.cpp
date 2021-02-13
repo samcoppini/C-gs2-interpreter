@@ -258,6 +258,12 @@ void showLines(GS2Context &gs2) {
     gs2.push(makeList(str));
 }
 
+// 0x59 - show-space
+void showSpace(GS2Context &gs2) {
+    auto val = gs2.pop();
+    gs2.push(makeList(val.str() + ' '));
+}
+
 // 0x55 - show-words
 void showWords(GS2Context &gs2) {
     auto listVal = gs2.pop();

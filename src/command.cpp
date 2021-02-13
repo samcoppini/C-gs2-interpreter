@@ -159,6 +159,7 @@ void Command::executeBytes(const std::vector<uint8_t> &bytes, GS2Context &gs2) {
         case 0x56: readNum(gs2);    break;
         case 0x57: readNums(gs2);   break;
         case 0x58: showLine(gs2);   break;
+        case 0x59: showSpace(gs2);  break;
         case 0x64: sum(gs2);        break;
         case 0x65: product(gs2);    break;
 
