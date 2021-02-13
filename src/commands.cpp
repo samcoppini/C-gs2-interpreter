@@ -47,6 +47,25 @@ void emptyList(GS2Context &gs2) {
     gs2.push(List{});
 }
 
+// 0x21 - bnot / head
+void head(GS2Context &gs2) {
+    auto value = gs2.pop();
+
+    if (value.isNumber()) {
+        gs2.push(~value.getNumber());
+    }
+    else if (value.isList()) {
+        auto &list = value.getList();
+        if (list.empty()) {
+            throw GS2Exception{"Cannot get the head of an empty list!"};
+        }
+        gs2.push(std::move(list[0]));
+    }
+    else {
+        throw GS2Exception{"Unsupported type for bnot / head"};
+    }
+}
+
 // 0x2a - double / lines
 void lines(GS2Context &gs2) {
     auto value = gs2.pop();

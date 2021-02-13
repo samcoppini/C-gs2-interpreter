@@ -248,6 +248,30 @@ TEST_CASE("Test 0x20 - negate / reverse / eval") {
     CHECK(result[0].getNumber() == 10);
 }
 
+TEST_CASE("Test 0x21 - bnot / head") {
+    // Push 10 to the stack, then bitwise negate it
+    auto result = getResult("\x1a\x21");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == ~10);
+
+    gs2::List sampleList;
+    sampleList.add(10);
+    sampleList.add(gs2::Block());
+    sampleList.add(gs2::List());
+
+    result = getResult("\x21", {sampleList});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    REQUIRE(result[0].getNumber() == 10);
+
+    // 0x21 cannot handle empty list
+    REQUIRE_THROWS_AS(getResult("\x21", {gs2::List{}}), gs2::GS2Exception);
+
+    // 0x21 cannot handle blocks
+    REQUIRE_THROWS_AS(getResult("\x21", {gs2::Block()}), gs2::GS2Exception);
+}
+
 TEST_CASE("Test 0x2a - double / lines") {
     // Push 1234 to the stack, then double it
     auto result = getResult("\x2a", {1234});
