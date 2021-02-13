@@ -244,7 +244,7 @@ void readNum(GS2Context &gs2) {
         throw GS2Exception{"Unable to read a number!"};
     }
 
-    gs2.push(std::stoll(match.str()));
+    gs2.push(Value::IntType(match.str()));
 }
 
 // 0x57 - read-nums
@@ -257,7 +257,7 @@ void readNums(GS2Context &gs2) {
 
     List numbers;
     for (auto it = begin; it != end; ++it) {
-        numbers.add(std::stoll(it->str()));
+        numbers.add(Value::IntType(it->str()));
     }
 
     gs2.push(std::move(numbers));
