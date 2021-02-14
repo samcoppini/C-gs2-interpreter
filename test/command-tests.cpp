@@ -373,6 +373,29 @@ TEST_CASE("Test 0x2a - double / lines") {
     compareString(splitLines[0].getList(), "");
 }
 
+TEST_CASE("Test 0x2e - range / length") {
+    auto result = getResult("\x2e", {154});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    auto list = result[0].getList();
+    REQUIRE(list.size() == 154);
+
+    for (int i = 0; i < 154; i++) {
+        REQUIRE(list[i].isNumber());
+        CHECK(list[i].getNumber() == i);
+    }
+
+    result = getResult("\x2e", {list});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 154);
+
+    result = getResult("\x2e", {-44});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    CHECK(result[0].getList().empty());
+}
+
 TEST_CASE("Test 0x30 - add / catenate") {
     // Note that having 0x30 at the start of a parsed block triggers line mode,
     // so to avoid that a nop (0x00) is inserted before each 0x30

@@ -234,6 +234,28 @@ void product(GS2Context &gs2) {
     }
 }
 
+// 0x2e - range / length
+void range(GS2Context &gs2) {
+    auto val = gs2.pop();
+
+    if (val.isNumber()) {
+        auto &endVal = val.getNumber();
+
+        List list;
+        for (uint64_t i = 0; i < endVal; i++) {
+            list.add(i);
+        }
+
+        gs2.push(std::move(list));
+    }
+    else if (val.isList()) {
+        gs2.push(val.getList().size());
+    }
+    else {
+        throw GS2Exception{"Block type is not valid for range / length"};
+    }
+}
+
 // 0x56 - read-num
 void readNum(GS2Context &gs2) {
     auto str = makeString(gs2.pop());
