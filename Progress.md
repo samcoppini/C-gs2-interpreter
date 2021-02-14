@@ -46,7 +46,6 @@ In the "Stack before" and "Stack after", the following notation is used:
 | `30` | add | *a* *b* | *c* | Adds two numbers together |
 | `30` | catenate | *A* *B* | *AB* | Combines two blocks | 
 | `30` | catenate | {*α*, ...} {*β*, ...} | {*α*, ..., *β*, ...} | Combines two lists. | 
-| 
 | `30` | catenate | *α* {*β*, ...} |  {*α*, *β*, ...} | Adds an element to the beginning of a list. |
 | `30` | catenate |  {*α*, ...} *β* |  {*α*, ..., *β*} | Adds an element to the end of a list. |
 | `34` | mod | *a* *b* | *c* | Perform a modulo operation |
