@@ -168,6 +168,7 @@ void Command::executeBytes(const std::vector<uint8_t> &bytes, GS2Context &gs2) {
         case 0x64: sum(gs2);               break;
         case 0x65: product(gs2);           break;
         case 0x84: uppercaseAlphabet(gs2); break;
+        case 0x85: lowercaseAlphabet(gs2); break;
         case 0xb2: counter(gs2);           break;
 
         default:

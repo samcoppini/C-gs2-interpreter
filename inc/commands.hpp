@@ -24,6 +24,8 @@ void last(GS2Context &);
 
 void lines(GS2Context &);
 
+void lowercaseAlphabet(GS2Context &);
+
 void negate(GS2Context &);
 
 void newLine(GS2Context &);

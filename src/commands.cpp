@@ -158,6 +158,15 @@ void lines(GS2Context &gs2) {
     }
 }
 
+// 0x85 - lowercase-alphabet
+void lowercaseAlphabet(GS2Context &gs2) {
+    List list;
+    for (int i = 'a'; i <= 'z'; i++) {
+        list.add(i);
+    }
+    gs2.push(std::move(list));
+}
+
 // 0x34 - mod / step / clean-split / map
 void mod(GS2Context &gs2) {
     auto y = gs2.pop();
