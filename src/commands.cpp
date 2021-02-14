@@ -256,6 +256,25 @@ void range(GS2Context &gs2) {
     }
 }
 
+// 0x2f - range1
+void range1(GS2Context &gs2) {
+    auto val = gs2.pop();
+
+    if (val.isNumber()) {
+        auto &endVal = val.getNumber();
+
+        List list;
+        for (uint64_t i = 1; i <= endVal; i++) {
+            list.add(i);
+        }
+
+        gs2.push(std::move(list));
+    }
+    else {
+        throw GS2Exception{"Unsupported types for 0x2f (for now)"};
+    }
+}
+
 // 0x56 - read-num
 void readNum(GS2Context &gs2) {
     auto str = makeString(gs2.pop());

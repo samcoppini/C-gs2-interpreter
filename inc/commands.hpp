@@ -34,6 +34,8 @@ void product(GS2Context &);
 
 void range(GS2Context &);
 
+void range1(GS2Context &);
+
 void readNum(GS2Context &);
 
 void readNums(GS2Context &);

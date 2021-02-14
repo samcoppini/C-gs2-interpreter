@@ -45,6 +45,7 @@ In the "Stack before" and "Stack after", the following notation is used:
 | `2a` | lines | {*α*, *β*, *γ*, ...} | {{*α*, *β*, *γ*} ...} | Splits a list into sublists, breaking at each newline character. |
 | `2e` | range | *a* | { 0, 1, ..., *a* - 1} | Pushes a list of the numbers 0 through *a* - 1. |
 | `2e` | length | { *α*, ... } | *a* | Pushes the length of a list. |
+| `2f` | range1 | *a* | { 1, ..., *a* } | Pushes a list of the numbers 1 through *a*. |
 | `30` | add | *a* *b* | *c* | Adds two numbers together |
 | `30` | catenate | *A* *B* | *AB* | Combines two blocks | 
 | `30` | catenate | {*α*, ...} {*β*, ...} | {*α*, ..., *β*, ...} | Combines two lists. | 
