@@ -600,7 +600,7 @@ TEST_CASE("Test 0x54 - show-lines") {
     CHECK_THROWS_AS(getResult("\x54", {11}), gs2::GS2Exception);
 }
 
-TEST_CASE("Test 0x55 - show-lines") {
+TEST_CASE("Test 0x55 - show-words") {
     gs2::List list;
     list.add(gs2::makeList("Hey"));
     list.add(gs2::makeList("What?"));
@@ -755,7 +755,7 @@ TEST_CASE("Test 0x64 - sum / even") {
     CHECK_THROWS_AS(getResult("\x64", {gs2::Block()}), gs2::GS2Exception);
 }
 
-TEST_CASE("Test 0x65 - sum / even") {
+TEST_CASE("Test 0x65 - product / odd") {
     auto result = getResult("\x65", {111});
     REQUIRE(result.size() == 1);
     REQUIRE(result[0].isNumber());

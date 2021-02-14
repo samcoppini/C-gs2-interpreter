@@ -1,6 +1,6 @@
 # gs2 interpreter
 
-This repo is for a work-in-progress gs2 interpreter written in C++.
+This repo is for a work-in-progress [gs2](https://esolangs.org/wiki/gs2) interpreter written in C++.
 
 ## Building
 
