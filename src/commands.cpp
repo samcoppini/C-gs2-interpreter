@@ -428,4 +428,13 @@ void tail(GS2Context &gs2) {
     }
 }
 
+// 0x84 - uppercase-alphabet
+void uppercaseAlphabet(GS2Context &gs2) {
+    List list;
+    for (int i = 'A'; i <= 'Z'; i++) {
+        list.add(i);
+    }
+    gs2.push(std::move(list));
+}
+
 } // namespace gs2

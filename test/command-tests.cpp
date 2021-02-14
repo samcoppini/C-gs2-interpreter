@@ -852,6 +852,13 @@ TEST_CASE("Test 0x65 - product / odd") {
     CHECK_THROWS_AS(getResult("\x65", {gs2::Block()}), gs2::GS2Exception);
 }
 
+TEST_CASE("Test 0x84 - uppercase-alphabet") {
+    auto result = getResult("\x84");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+}
+
 TEST_CASE("Test 0xb2 - counter") {
     auto result = getResult("\xb2\xb2\xb2\xb2\xb2");
     REQUIRE(result.size() == 5);
