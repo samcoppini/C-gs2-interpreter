@@ -866,6 +866,12 @@ TEST_CASE("Test 0x85 - lowercase-alphabet") {
     compareString(result[0].getList(), "abcdefghijklmnopqrstuvwxyz");
 }
 
+TEST_CASE("Test 0x86 - ascii-digits") {
+    auto result = getResult("\x86");
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), "0123456789");
+}
 
 TEST_CASE("Test 0xb2 - counter") {
     auto result = getResult("\xb2\xb2\xb2\xb2\xb2");

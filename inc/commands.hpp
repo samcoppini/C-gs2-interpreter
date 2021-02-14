@@ -6,6 +6,8 @@ class GS2Context;
 
 void abs(GS2Context &);
 
+void asciiDigits(GS2Context &);
+
 void catenate(GS2Context &);
 
 void counter(GS2Context &);

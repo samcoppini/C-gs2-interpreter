@@ -30,6 +30,15 @@ void abs(GS2Context &gs2) {
     }
 }
 
+// 0x86 - ascii-digits
+void asciiDigits(GS2Context &gs2) {
+    List list;
+    for (int i = '0'; i <= '9'; i++) {
+        list.add(i);
+    }
+    gs2.push(std::move(list));
+}
+
 // 0x30 - add / catenate
 void catenate(GS2Context &gs2) {
     auto y = gs2.pop();
