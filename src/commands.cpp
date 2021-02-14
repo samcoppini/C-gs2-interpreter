@@ -228,6 +228,15 @@ void newLine(GS2Context &gs2) {
     gs2.push(std::move(list));
 }
 
+// 0x87 - printable-ascii
+void printableAscii(GS2Context &gs2) {
+    List list;
+    for (int i = 32; i <= 126; i++) {
+        list.add(i);
+    }
+    gs2.push(std::move(list));
+}
+
 // 0x50 - pop
 void pop(GS2Context &gs2) {
     gs2.pop();

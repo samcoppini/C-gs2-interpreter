@@ -73,4 +73,5 @@ In the "Stack before" and "Stack after", the following notation is used:
 | `84` | uppercase-alphabet | | *κ* | Pushes a string of all the uppercase letters. |
 | `85` | lowercase-alphabet | | *κ* | Pushes a string of all the lowercase letters. |
 | `86` | ascii-digits | | *κ* | Pushes a string of the ascii digits. |
+| `87` | printable-ascii | | *κ* | Pushes a string containing all of the printable ascii characters. |
 | `b2` | counter | | *a* | Pushes the number of times the counter command has been executed. |

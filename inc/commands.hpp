@@ -38,6 +38,8 @@ void pop(GS2Context &);
 
 void pop2(GS2Context &);
 
+void printableAscii(GS2Context &);
+
 void product(GS2Context &);
 
 void range(GS2Context &);
