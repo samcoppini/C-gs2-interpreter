@@ -55,6 +55,8 @@ In the "Stack before" and "Stack after", the following notation is used:
 | `34` | step | {*α*, *β*, ...} *n* | {*γ*, ...} | Take every *n*th element of a list. |
 | `34` | clean-split | {*α*, ...} {*β*, ...} | {{*γ*, ...}, ...} | Splits a list {*α*, ...} into sublists, breaking at occurrences of {*β*, ...}, removing empty lists. |
 | `34` |  map | {*α*, ...} *A* | {*β*, ...} | Apply *A* to each member of a list. |
+| `40` | dup |  *α* |  *α* *α* | Duplicates the top element of the stack. |
+| `41` | dup2 | *α* *β* |  *α* *β*  *α* *β* | Duplicates the top two elements of the stack. |
 | `50` | pop | *α* | | Removes the top element of the stack. |
 | `51` | pop2 | *α* *β* | | Removes the top two elements of the stack. |
 | `52` | show | *α* | {*a*, *b*, ...} | Converts an element to a string. |

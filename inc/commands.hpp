@@ -10,6 +10,10 @@ void catenate(GS2Context &);
 
 void counter(GS2Context &);
 
+void dup(GS2Context &);
+
+void dup2(GS2Context &);
+
 void emptyBlock(GS2Context &);
 
 void emptyList(GS2Context &);

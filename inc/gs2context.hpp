@@ -19,6 +19,8 @@ class GS2Context {
 
         Value pop();
 
+        void dup(size_t indexFromBack);
+
         int getAndIncCounter();
 
         void do_map(const Block &block, List val);

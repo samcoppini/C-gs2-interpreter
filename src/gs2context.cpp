@@ -1,5 +1,6 @@
 #include "gs2context.hpp"
 #include "block.hpp"
+#include "gs2exception.hpp"
 
 namespace gs2 {
 
@@ -14,6 +15,13 @@ void GS2Context::push(Value value) {
 
 Value GS2Context::pop() {
     return _stack.pop();
+}
+
+void GS2Context::dup(size_t indexFromBack) {
+    if (_stack.size() <= indexFromBack) {
+        throw GS2Exception{"Stack is too small!"};
+    }
+    push(_stack[_stack.size() - indexFromBack - 1]);
 }
 
 int GS2Context::getAndIncCounter() {

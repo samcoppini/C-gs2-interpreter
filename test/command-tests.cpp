@@ -567,6 +567,37 @@ TEST_CASE("Test 0x34 - mod / step / clean-split / map") {
     }
 }
 
+TEST_CASE("Test 0x40 - dup") {
+    auto result = getResult("\x40", {13});
+    REQUIRE(result.size() == 2);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 13);
+    REQUIRE(result[1].isNumber());
+    CHECK(result[1].getNumber() == 13);
+
+    // Empty stack should throw
+    CHECK_THROWS_AS(getResult("\x40"), gs2::GS2Exception);
+}
+
+TEST_CASE("Test 0x41 - dup2") {
+    auto result = getResult("\x41", {1, 2});
+    REQUIRE(result.size() == 4);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 1);
+    REQUIRE(result[1].isNumber());
+    CHECK(result[1].getNumber() == 2);
+    REQUIRE(result[2].isNumber());
+    CHECK(result[2].getNumber() == 1);
+    REQUIRE(result[3].isNumber());
+    CHECK(result[3].getNumber() == 2);
+
+    // Empty stack should throw
+    CHECK_THROWS_AS(getResult("\x41"), gs2::GS2Exception);
+
+    // Stack with only 1 element should also throw
+    CHECK_THROWS_AS(getResult("\x41", {33}), gs2::GS2Exception);
+}
+
 TEST_CASE("Test 0x50 - pop") {
     auto result = getResult("\x50", {1, 2, 3});
     REQUIRE(result.size() == 2);

@@ -65,6 +65,17 @@ void counter(GS2Context &gs2) {
     gs2.push(gs2.getAndIncCounter());
 }
 
+// 0x40 - dup
+void dup(GS2Context &gs2) {
+    gs2.dup(0);
+}
+
+// 0x41 - dup2
+void dup2(GS2Context &gs2) {
+    gs2.dup(1);
+    gs2.dup(1);
+}
+
 // 0x0c - empty-block
 void emptyBlock(GS2Context &gs2) {
     gs2.push(Block{});

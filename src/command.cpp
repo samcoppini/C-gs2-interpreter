@@ -154,6 +154,8 @@ void Command::executeBytes(const std::vector<uint8_t> &bytes, GS2Context &gs2) {
         case 0x2f: range1(gs2);     break;
         case 0x30: catenate(gs2);   break;
         case 0x34: mod(gs2);        break;
+        case 0x40: dup(gs2);        break;
+        case 0x41: dup2(gs2);       break;
         case 0x50: pop(gs2);        break;
         case 0x51: pop2(gs2);       break;
         case 0x52: show(gs2);       break;
