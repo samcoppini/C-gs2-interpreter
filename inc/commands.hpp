@@ -20,6 +20,8 @@ void emptyBlock(GS2Context &);
 
 void emptyList(GS2Context &);
 
+void fold(GS2Context &);
+
 void head(GS2Context &);
 
 void last(GS2Context &);

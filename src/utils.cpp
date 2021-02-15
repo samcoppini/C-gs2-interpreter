@@ -33,6 +33,28 @@ std::string makeString(Value value) {
     }
 }
 
+List join(List toJoin, const List &separator) {
+    List joined;
+
+    for (size_t i = 0; i < toJoin.size(); i++) {
+        if (i > 0) {
+            for (const auto &val: separator) {
+                joined.add(val);
+            }
+        }
+        if (toJoin[i].isList()) {
+            for (auto &item: toJoin[i].getList()) {
+                joined.add(std::move(item));
+            }
+        }
+        else {
+            joined.add(std::move(toJoin[i]));
+        }
+    }
+
+    return joined;
+}
+
 bool subListEqual(const List &list1, const List &list2, size_t start) {
     if (start + list1.size() > list2.size()) {
         return false;

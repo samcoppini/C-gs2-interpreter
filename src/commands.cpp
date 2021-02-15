@@ -95,6 +95,63 @@ void emptyList(GS2Context &gs2) {
     gs2.push(List{});
 }
 
+// 0x32 - mul / join / times / fold
+void fold(GS2Context &gs2) {
+    auto y = gs2.pop();
+    auto x = gs2.pop();
+
+    if (x.isNumber() && !y.isNumber()) {
+        std::swap(x, y);
+    }
+    else if (x.isBlock() && y.isList()) {
+        std::swap(x, y);
+    }
+
+    if (x.isNumber() && y.isNumber()) {
+        x.getNumber() *= y.getNumber();
+        gs2.push(std::move(x));
+    }
+    else if (x.isList() && y.isList()) {
+        gs2.push(join(std::move(x.getList()), y.getList()));
+    }
+    else if (x.isList() && y.isNumber()) {
+        auto &list = x.getList();
+        auto &num = y.getNumber();
+
+        List multipliedList;
+        while (num-- > 0) {
+            for (const auto &val: list) {
+                multipliedList.add(val);
+            }
+        }
+
+        gs2.push(std::move(multipliedList));
+    }
+    else if (x.isBlock() && y.isNumber()) {
+        auto &num = y.getNumber();
+        auto &block = x.getBlock();
+        while (num-- > 0) {
+            block.execute(gs2);
+        }
+    }
+    else if (x.isList() && y.isBlock()) {
+        auto &list = x.getList();
+        auto &block = y.getBlock();
+
+        if (list.empty()) {
+            throw GS2Exception{"Cannot fold an empty list!"};
+        }
+        gs2.push(std::move(list[0]));
+        for (auto it = list.begin() + 1; it != list.end(); ++it) {
+            gs2.push(std::move(*it));
+            block.execute(gs2);
+        }
+    }
+    else {
+        throw GS2Exception{"Unsupported types for multiply / join / times / fold"};
+    }
+}
+
 // 0x21 - bnot / head
 void head(GS2Context &gs2) {
     auto value = gs2.pop();
@@ -403,7 +460,6 @@ void showWords(GS2Context &gs2) {
 
     gs2.push(makeList(str));
 }
-
 
 // 0x0d - space
 void space(GS2Context &gs2) {

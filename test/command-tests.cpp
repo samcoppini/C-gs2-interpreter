@@ -507,6 +507,55 @@ TEST_CASE("Test 0x30 - add / catenate") {
     }
 }
 
+TEST_CASE("Test 0x32 - mul / join / times / fold") {
+    SECTION("mul") {
+        auto result = getResult("\x32", {-209, 117});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isNumber());
+        CHECK(result[0].getNumber() == -24453);
+
+        auto list = gs2::makeList("Blah");
+        result = getResult("\x32", {list, 5});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        compareString(result[0].getList(), "BlahBlahBlahBlahBlah");
+
+        result = getResult("\x32", {-3, list});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        CHECK(result[0].getList().empty());
+    }
+
+    SECTION("join") {
+        auto toJoin = gs2::makeList("1234");
+        auto sep = gs2::makeList("___");
+        auto result = getResult("\x32", {toJoin, sep});
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isList());
+        compareString(result[0].getList(), "1___2___3___4");
+    }
+
+    SECTION("times") {
+        gs2::Block block;
+        block.add(std::vector<uint8_t>{10});
+        auto result = getResult("\x32", {block, 109});
+        REQUIRE(result.size() == 109);
+        for (const auto &val: result) {
+            REQUIRE(val.isList());
+            compareString(val.getList(), "\n");
+        }
+    }
+
+    SECTION("fold") {
+        auto list = gs2::makeList("\x01\x02\x03\x04\x05");
+        auto result = getResult("\x08\x30\x09\x32", {list});
+
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0].isNumber());
+        CHECK(result[0].getNumber() == 15);
+    }
+}
+
 TEST_CASE("Test 0x34 - mod / step / clean-split / map") {
     SECTION("mod") {
         auto result = getResult("\x34", {18715338, 16252});

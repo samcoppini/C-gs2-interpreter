@@ -53,6 +53,11 @@ In the "Stack before" and "Stack after", the following notation is used:
 | `30` | catenate | {*α*, ...} {*β*, ...} | {*α*, ..., *β*, ...} | Combines two lists. | 
 | `30` | catenate | *α* {*β*, ...} |  {*α*, *β*, ...} | Adds an element to the beginning of a list. |
 | `30` | catenate |  {*α*, ...} *β* |  {*α*, ..., *β*} | Adds an element to the end of a list. |
+| `32` | mul | *a* *b* | *ab* | Multiplies two numbers. |
+| `32` | mul | {*α*} *a* | {*α*, *α*, ...} | Creates a list from the list *α* repeated *a* times. |
+| `32` | times | *A* *b* | | Repeat the execution of the block *A* *b* times. |
+| `32` | join | {*α*} {*β*} | {*α*, *β*, *α*, ...} | Joins the elements in the list *α* into one list, with separate elements separated by *β*. |
+| `32` | fold | *A* {*α*} | | Push the first element of the list to the stack, then push every other element and execute the block. |
 | `34` | mod | *a* *b* | *c* | Perform a modulo operation |
 | `34` | step | {*α*, *β*, ...} *n* | {*γ*, ...} | Take every *n*th element of a list. |
 | `34` | clean-split | {*α*, ...} {*β*, ...} | {{*γ*, ...}, ...} | Splits a list {*α*, ...} into sublists, breaking at occurrences of {*β*, ...}, removing empty lists. |

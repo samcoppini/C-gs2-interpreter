@@ -11,6 +11,8 @@ List makeList(const std::string &str);
 
 std::string makeString(Value value);
 
+List join(List toJoin, const List &separator);
+
 List split(List toSplit, const List &sep, bool clean = false);
 
 List stepOver(List list, int64_t stepSize);
