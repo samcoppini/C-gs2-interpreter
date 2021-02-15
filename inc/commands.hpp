@@ -66,6 +66,8 @@ void sum(GS2Context &);
 
 void tail(GS2Context &);
 
+void unlines(GS2Context &);
+
 void uppercaseAlphabet(GS2Context &);
 
 } // namespace gs2

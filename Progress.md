@@ -43,6 +43,8 @@ In the "Stack before" and "Stack after", the following notation is used:
 | `24` | last | {*α*, *β*, *γ*} | *γ* | Extracts the last element of a list. |
 | `2a` | double | *a* | 2*a* | Multiplies a number by 2. |
 | `2a` | lines | {*α*, *β*, *γ*, ...} | {{*α*, *β*, *γ*} ...} | Splits a list into sublists, breaking at each newline character. |
+| `2b` | half | *a* | *a*/2 | Divides an integer by 2. |
+| `2b` | unlines | {*α*, *β*, *γ*} | {*α*, *κ*, *β*, *κ*, *γ*} | Converts all of the elements of a list to strings, then delimit the elements with newlines. |
 | `2e` | range | *a* | { 0, 1, ..., *a* - 1} | Pushes a list of the numbers 0 through *a* - 1. |
 | `2e` | length | { *α*, ... } | *a* | Pushes the length of a list. |
 | `2f` | range1 | *a* | { 1, ..., *a* } | Pushes a list of the numbers 1 through *a*. |

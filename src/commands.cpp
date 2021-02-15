@@ -455,6 +455,34 @@ void tail(GS2Context &gs2) {
     }
 }
 
+// 0x2b - half / unlines
+void unlines(GS2Context &gs2) {
+    auto val = gs2.pop();
+
+    if (val.isNumber()) {
+        val.getNumber() /= 2;
+        gs2.push(std::move(val));
+    }
+    else if (val.isList()) {
+        List joined;
+        auto &toJoin = val.getList();
+
+        for (size_t i = 0; i < toJoin.size(); i++) {
+            if (i > 0) {
+                joined.add('\n');
+            }
+            for (auto c: toJoin[i].str()) {
+                joined.add(c);
+            }
+        }
+
+        gs2.push(std::move(joined));
+    }
+    else {
+        throw GS2Exception{"Cannot perform half/unlines on a block!"};
+    }
+}
+
 // 0x84 - uppercase-alphabet
 void uppercaseAlphabet(GS2Context &gs2) {
     List list;

@@ -373,6 +373,23 @@ TEST_CASE("Test 0x2a - double / lines") {
     compareString(splitLines[0].getList(), "");
 }
 
+TEST_CASE("Test 0x2b - half / unlines") {
+    auto result = getResult("\x2b", {21});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isNumber());
+    CHECK(result[0].getNumber() == 10);
+
+    gs2::List toJoin;
+    toJoin.add(117);
+    toJoin.add(gs2::makeList("Blah"));
+    toJoin.add(gs2::makeList(""));
+    toJoin.add(12);
+    result = getResult("\x2b", {toJoin});
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0].isList());
+    compareString(result[0].getList(), "117\nBlah\n\n12");
+}
+
 TEST_CASE("Test 0x2e - range / length") {
     auto result = getResult("\x2e", {154});
     REQUIRE(result.size() == 1);
