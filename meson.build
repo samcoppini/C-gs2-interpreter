@@ -14,6 +14,9 @@ boost_dep = dependency('boost')
 catch2_proj = subproject('catch2')
 catch2_dep = catch2_proj.get_variable('catch2_dep')
 
+cli11_proj = subproject('cli11')
+cli11_dep = cli11_proj.get_variable('CLI11_dep')
+
 gs2_src = files(
     'src/block.cpp',
     'src/command.cpp',
@@ -47,7 +50,11 @@ gs2_exe = executable(
     'gs2',
     'src/main.cpp',
     dependencies: [
+        cli11_dep,
         gs2_dep,
+    ],
+    cpp_args: [
+        '-DGS2_VERSION="@0@"'.format(meson.project_version()),
     ],
     install: true,
 )

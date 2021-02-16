@@ -2,6 +2,8 @@
 #include "gs2context.hpp"
 #include "gs2exception.hpp"
 
+#include <CLI/CLI.hpp>
+
 #include <fstream>
 #include <iostream>
 
@@ -27,17 +29,26 @@ gs2::List initialStack() {
     return stack;
 }
 
-void printUsage(const char *progName) {
-    std::cerr << "Usage: " << progName << " <gs2-file>\n";
-}
-
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        printUsage(argv[0]);
+    std::string filename;
+    bool printVersion;
+
+    CLI::App app{"An interpreter for the gs2 programming language."};
+    app.add_option("file", filename, "The gs2 file to interpret.");
+    app.add_flag("-v,--version", printVersion, "Print the gs2 version and exit.");
+    CLI11_PARSE(app, argc, argv);
+
+    if (printVersion) {
+        std::cout << "gs2-cpp " << GS2_VERSION << "\n";
+        return 0;
+    }
+
+    if (filename.empty()) {
+        std::cerr << "No input file provided!\n";
         return 1;
     }
 
-    std::ifstream codeFile{argv[1], std::ios_base::in | std::ios_base::binary};
+    std::ifstream codeFile{filename, std::ios_base::in | std::ios_base::binary};
     if (!codeFile.is_open()) {
         std::cerr << "Unable to open '" << argv[1] << "'\n";
         return 2;
